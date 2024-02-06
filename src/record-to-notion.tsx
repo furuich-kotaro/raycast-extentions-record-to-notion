@@ -1,0 +1,231 @@
+import { useState, useEffect } from "react";
+import {
+  Form,
+  ActionPanel,
+  Action,
+  Clipboard,
+  showToast,
+  Toast,
+  launchCommand,
+  LaunchType,
+  PopToRootType,
+  closeMainWindow,
+} from "@raycast/api";
+import { useForm, FormValidation } from "@raycast/utils";
+import {
+  extractPageTitle,
+  formatPageTitle,
+  pageToClipboardText,
+  buildSearchParams,
+  buildRequestParams,
+  categoryOptions,
+  effectivityOptions,
+  databaseId,
+  notionClient,
+  timeProperty,
+} from "../lib/notion";
+import { createInterval } from "../lib/intervals";
+import {
+  pageObject,
+  FormValues,
+} from "../lib/types";
+
+export default function Command() {
+  const [creating, setCreating] = useState(false);
+  const [postLog, setPostLog] = useState("");
+  const [latestPage, setLatestPage] = useState({} as pageObject);
+
+  function launchSelfTimer() {
+    try {
+      launchCommand({
+        name: "check-task-timer",
+        type: LaunchType.UserInitiated,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function calculateMinutes(startMinutes: string, endMinutes: string) {
+    const start = Math.abs(Number(startMinutes));
+    const end = Math.abs(Number(endMinutes));
+    return end - start;
+  }
+
+  function getDifferenceInMinutes(dateString: string) {
+    const inputTime = new Date(dateString).getTime();
+    const currentTime = new Date().getTime()
+    const differenceInMilliseconds = currentTime - inputTime
+    const differenceInMinutes = Math.floor(differenceInMilliseconds / 60000);
+
+    return differenceInMinutes;
+  }
+
+
+  const { handleSubmit, itemProps, setValue } = useForm<FormValues>({
+    onSubmit(values) {
+      if (creating) {
+        return;
+      }
+      setCreating(true);
+      showToast({ style: Toast.Style.Animated, title: "Creating the page..." });
+
+      notionClient
+        .post(`/pages`, buildRequestParams(values))
+        .then((res) => {
+          showToast({ style: Toast.Style.Success, title: "success" });
+
+          const page = res.data;
+          Clipboard.copy(pageToClipboardText(page));
+
+          if (values.continueRegister) {
+            setPostLog((before_value) => `${before_value}\n${formatPageTitle(page)}`);
+          } else {
+            const taskMinutes = calculateMinutes(values.start_minutes, values.end_minutes);
+            if (taskMinutes > 0) {
+              createInterval(taskMinutes);
+              launchSelfTimer();
+            }
+            closeMainWindow({ popToRootType: PopToRootType.Immediate });
+          }
+        })
+        .catch(() => {
+          showToast({ style: Toast.Style.Failure, title: "bad inputs" });
+        })
+        .finally(() => {
+          setCreating(false);
+        });
+    },
+    initialValues: {
+      title: "",
+      start_minutes: "0",
+      end_minutes: "30",
+      effectivity: "B",
+      category: "",
+      reflection: "",
+      continueRegister: false,
+    },
+    validation: {
+      title: FormValidation.Required,
+      start_minutes: (value) => {
+        if (!value) {
+          return "必須";
+        } else if (value && isNaN(Number(value))) {
+          return "数字のみ";
+        } else if (parseInt(value) > 0) {
+          return "0以下";
+        }
+      },
+      end_minutes: (value) => {
+        if (!value) {
+          return "必須";
+        } else if (value && isNaN(Number(value))) {
+          return "数字のみ";
+        } else if (parseInt(value) < 0) {
+          return "0以上";
+        }
+      },
+    },
+  });
+
+  function fetchLatestPages() {
+    const params = buildSearchParams();
+    notionClient
+      .post(`/databases/${databaseId}/query`, params)
+      .then((res) => {
+        const pages = res.data.results;
+        const titles = pages
+          .map((page: any) => formatPageTitle(page))
+          .reverse()
+          .join("\n");
+        setPostLog(titles);
+        setLatestPage(pages[0]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  useEffect(() => {
+    fetchLatestPages();
+  }, []);
+
+  return (
+    <Form
+      isLoading={creating}
+      actions={
+        <ActionPanel>
+          <Action.SubmitForm onSubmit={handleSubmit} title="Create the Page" />
+          <Action
+            title="Set new timer"
+            autoFocus={true}
+            onAction={() =>
+              launchCommand({
+                type: LaunchType.UserInitiated,
+                name: "set-custom-timer",
+              })
+            }
+          />
+        </ActionPanel>
+      }
+    >
+      <Form.Checkbox
+        id="setTimer"
+        label="15分のタイマーをセット"
+        defaultValue={false}
+        onChange={(newValue) => {
+          if (newValue) {
+            createInterval(15);
+            closeMainWindow({ popToRootType: PopToRootType.Immediate });
+          }
+        }}
+      />
+      <Form.TextField title="タイトル" {...itemProps.title} />
+      <Form.TextField title="開始" {...itemProps.start_minutes} />
+      <Form.TextField title="作業時間" {...itemProps.end_minutes} />
+      {latestPage && (
+        <>
+          <Form.Checkbox
+            id="updateNow"
+            label="前回のログ完了から記録"
+            defaultValue={false}
+            onChange={(newValue) => {
+              if (newValue) {
+                const end_minutes = latestPage?.properties[timeProperty]?.date?.end;
+                const minutes = getDifferenceInMinutes(end_minutes);
+
+                setValue("start_minutes", `-${minutes.toString()}`);
+                setValue("end_minutes", minutes.toString());
+              }
+            }}
+          />
+          <Form.Checkbox
+            id="copyLatestLog"
+            label="直近のログをコピー"
+            defaultValue={false}
+            onChange={(newValue) => {
+              if (newValue) {
+                setValue("title", extractPageTitle(latestPage));
+              }
+            }}
+          />
+        </>
+      )}
+      <Form.Dropdown title="効果" {...itemProps.effectivity}>
+        {Object.keys(effectivityOptions).map((key: string) => (
+          <Form.Dropdown.Item key={key} value={key} title={effectivityOptions[key as keyof typeof effectivityOptions]} />
+        ))}
+      </Form.Dropdown>
+      <Form.Dropdown title="時間分類" {...itemProps.category}>
+        {categoryOptions.map((value, index) => (
+          <Form.Dropdown.Item key={`${index}-category`} value={value} title={value} />
+        ))}
+      </Form.Dropdown>
+       
+      <Form.TextArea title="振り返り" {...itemProps.reflection} />
+      <Form.Checkbox label="引き続き登録する" {...itemProps.continueRegister} />
+      <Form.Separator />
+      <Form.TextArea id="pastLog" title="過去ログ" value={postLog} onChange={() => {}} />
+    </Form>
+  );
+}

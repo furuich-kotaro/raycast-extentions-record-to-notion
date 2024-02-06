@@ -1,0 +1,116 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "record-time-log-to-notion",
+  "title": "record time log to notion",
+  "description": "manage time log to notion and check task timer",
+  "icon": "command-icon.png",
+  "author": "furuich-kotaro",
+  "license": "MIT",
+  "preferences": [
+    {
+      "name": "notionToken",
+      "title": "Notion API Token",
+      "placeholder": "Notion API Token",
+      "description": "Notion API Token",
+      "type": "password",
+      "required": true
+    },
+    {
+      "name": "databaseId",
+      "title": "Database id of Notion",
+      "description": "database id of notion to record time log",
+      "type": "textfield",
+      "required": true
+    },
+    {
+      "name": "titleProperty",
+      "title": "titleProperty",
+      "description": "titleProperty",
+      "type": "textfield",
+      "required": true
+    },
+    {
+      "name": "timeProperty",
+      "title": "timeProperty",
+      "description": "timeProperty",
+      "type": "textfield",
+      "required": true
+    },
+    {
+      "name": "reflectionProperty",
+      "title": "reflectionProperty",
+      "description": "reflectionProperty",
+      "type": "textfield",
+      "required": true
+    },
+    {
+      "name": "effectivityProperty",
+      "title": "effectivityProperty",
+      "description": "effectivityProperty",
+      "type": "textfield",
+      "required": true
+    },
+    {
+      "name": "categoryProperty",
+      "title": "categoryProperty",
+      "description": "categoryProperty",
+      "type": "textfield",
+      "required": true
+    },
+    {
+      "name": "expectedWorkTimeProperty",
+      "title": "expectedWorkTimeProperty",
+      "description": "expectedWorkTimeProperty",
+      "type": "textfield",
+      "required": true
+    }
+  ],
+  "commands": [
+    {
+      "name": "record-to-notion",
+      "title": "Record to notion",
+      "description": "record to notion",
+      "mode": "view"
+    },
+    {
+      "name": "set-custom-timer",
+      "title": "Set custom timer",
+      "description": "set custom timer",
+      "mode": "view"
+    },
+    {
+      "name": "update-to-notion",
+      "title": "Update to notion",
+      "description": "update to notion",
+      "mode": "view"
+    },
+    {
+      "name": "check-task-timer",
+      "title": "Check end of task timer",
+      "description": "check end of task timer",
+      "mode": "menu-bar",
+      "interval": "1m"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.64.4",
+    "@raycast/utils": "^1.10.1",
+    "axios": "^1.6.3",
+    "child_process": "^1.0.2"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^1.0.6",
+    "@types/node": "20.8.10",
+    "@types/react": "18.2.27",
+    "eslint": "^8.51.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}
