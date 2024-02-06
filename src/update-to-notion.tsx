@@ -27,9 +27,7 @@ import {
   timeProperty,
 } from "../lib/notion";
 
-import {
-  FormValues,
-} from "../lib/types";
+import { FormValues } from "../lib/types";
 
 export default function Command() {
   const [ updating, setUpdating ] = useState(false);

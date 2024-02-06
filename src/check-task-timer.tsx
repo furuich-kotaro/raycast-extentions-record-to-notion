@@ -18,16 +18,6 @@ export default function CheckTaskTimer() {
     }
 
     resetInterval();
-  } else if (!currentInterval) {
-    try {
-      launchCommand({
-        type: LaunchType.UserInitiated,
-        name: "record-to-notion",
-      });
-
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   function onReset() {

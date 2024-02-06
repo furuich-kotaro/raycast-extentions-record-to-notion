@@ -89,7 +89,14 @@
       "title": "Check end of task timer",
       "description": "check end of task timer",
       "mode": "menu-bar",
-      "interval": "1m"
+      "interval": "10s"
+    },
+    {
+      "name": "check-recording",
+      "title": "Check recording",
+      "description": "check recording",
+      "mode": "no-view",
+      "interval": "3m"
     }
   ],
   "dependencies": {
