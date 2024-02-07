@@ -3,6 +3,7 @@ import { getPreferenceValues } from "@raycast/api";
 import {
   Preferences,
   FormValues,
+  pageObject,
 } from "./types";
 
 const preferences = getPreferenceValues<Preferences>();
@@ -164,7 +165,7 @@ export function buildSearchParams(page_size: number = 5): any {
   return params;
 }
 
-export function formatPageTitle(page: any): string {
+export function formatPageTitle(page: pageObject): string {
   const title = page.properties[titleProperty].title[0].plain_text;
   const dateEvent = page.properties[timeProperty];
   const start_time = dateEvent.date.start.substring(11, 16)
@@ -172,11 +173,11 @@ export function formatPageTitle(page: any): string {
   return `${title} ${start_time} ~ ${end_time}`;
 }
 
-export function extractPageTitle(page: any): string {
+export function extractPageTitle(page: pageObject): string {
   return page.properties[titleProperty].title[0].plain_text;
 }
 
-export function pageToClipboardText(page: any): string {
+export function pageToClipboardText(page: pageObject): string {
   const dateEvent = page.properties[timeProperty];
   const tmpReflection = page.properties[reflectionProperty].rich_text[0]
 

@@ -44,9 +44,7 @@ export type pageObject = {
     [key: string]: any;
   };
   archived: boolean;
-  properties: {
-    [key: string]: any;
-  };
+  properties: any;
   url: string;
   public_url: string;
 };
