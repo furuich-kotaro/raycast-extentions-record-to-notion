@@ -8,6 +8,8 @@ import {
   Toast,
   launchCommand,
   LaunchType,
+  PopToRootType,
+  closeMainWindow,
 } from "@raycast/api";
 import { useForm, FormValidation } from "@raycast/utils";
 import {
@@ -26,7 +28,7 @@ import {
   titleProperty,
   timeProperty,
 } from "../lib/notion";
-
+import { createInterval } from "../lib/intervals";
 import { FormValues } from "../lib/types";
 
 export default function Command() {
@@ -132,6 +134,17 @@ export default function Command() {
         </ActionPanel>
       }
     >
+      <Form.Checkbox
+        id="setTimer"
+        label="5分のタイマーをセット"
+        defaultValue={false}
+        onChange={(newValue) => {
+          if (newValue) {
+            createInterval(5);
+            closeMainWindow({ popToRootType: PopToRootType.Immediate });
+          }
+        }}
+      />
       {!pageLoading && (
         <>
           <Form.Dropdown
