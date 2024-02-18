@@ -183,7 +183,7 @@ export default function Command() {
       <Form.TextField title="タイトル" {...itemProps.title} />
       <Form.TextField title="開始" {...itemProps.start_minutes} />
       <Form.TextField title="作業時間" {...itemProps.end_minutes} />
-      {latestPage && (
+      {latestPage?.properties && (
         <>
           <Form.Checkbox
             id="updateNow"
