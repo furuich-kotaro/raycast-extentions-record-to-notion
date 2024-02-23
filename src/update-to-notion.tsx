@@ -136,11 +136,11 @@ export default function Command() {
     >
       <Form.Checkbox
         id="setTimer"
-        label="5分のタイマーをセット"
+        label="10分のタイマーをセット"
         defaultValue={false}
         onChange={(newValue) => {
           if (newValue) {
-            createInterval(5);
+            createInterval(10);
             closeMainWindow({ popToRootType: PopToRootType.Immediate });
           }
         }}
@@ -161,6 +161,17 @@ export default function Command() {
           <Form.TextField title="タイトル" {...itemProps.title} />
           <Form.TextField title="開始" {...itemProps.start_minutes} />
           <Form.TextField title="作業時間" {...itemProps.end_minutes} />
+          <Form.Checkbox
+            id="updateNow"
+            label="現在時刻で更新"
+            defaultValue={false}
+            onChange={(newValue) => {
+              if (newValue) {
+                formatMinutes
+                setValue("end_minutes", (formatMinutes(0).substring(0, 16)));
+              }
+            }}
+          />
           <Form.TextArea title="振り返り" {...itemProps.reflection} />
           <Form.Dropdown title="効果" {...itemProps.effectivity}>
             {Object.keys(effectivityOptions).map((key: string) => (
@@ -173,17 +184,6 @@ export default function Command() {
             ))}
           </Form.Dropdown>
           <Form.Checkbox label="引き続き更新する" {...itemProps.continueUpdate} />
-          <Form.Checkbox
-            id="updateNow"
-            label="現在時刻で更新"
-            defaultValue={false}
-            onChange={(newValue) => {
-              if (newValue) {
-                formatMinutes
-                setValue("end_minutes", (formatMinutes(0).substring(0, 16)));
-              }
-            }}
-          />
         </>
       )}
     </Form>
