@@ -165,12 +165,17 @@ export function buildSearchParams(page_size: number = 5): any {
   return params;
 }
 
-export function formatPageTitle(page: pageObject): string {
-  const title = page.properties[titleProperty].title[0].plain_text;
+function formatPageStartEndTime(page: pageObject): string {
   const dateEvent = page.properties[timeProperty];
   const start_time = dateEvent.date.start.substring(11, 16)
   const end_time = dateEvent.date.end.substring(11, 16)
-  return `${title} ${start_time} ~ ${end_time}`;
+  return `${start_time} ~ ${end_time}`;
+}
+
+export function formatPageTitle(page: pageObject): string {
+  const title = page.properties[titleProperty].title[0].plain_text;
+  const time = formatPageStartEndTime(page);
+  return `${title} ${time}`;
 }
 
 export function extractPageTitle(page: pageObject): string {
@@ -182,8 +187,7 @@ export function pageToClipboardText(page: pageObject): string {
   const tmpReflection = page.properties[reflectionProperty].rich_text[0]
 
   const title = page.properties[titleProperty].title[0].plain_text;
-  const start_time = dateEvent.date.start.substring(11, 16)
-  const end_time = dateEvent.date.end.substring(11, 16)
+  const time = formatPageStartEndTime(page);
   let reflection = tmpReflection ? tmpReflection.plain_text : "";
 
   const now = new Date();
@@ -194,5 +198,11 @@ export function pageToClipboardText(page: pageObject): string {
     reflection = "## 振り返り\n" + reflection;
   }
 
-  return `${start_time} ~ ${end_time} \n${title}\n\n${reflection}`;
+  return `${time} ${title}\n\n${reflection}`;
+}
+
+export function formatPageTitleForObsidian(page: pageObject): string {
+  const title = page.properties[titleProperty].title[0].plain_text;
+  const time = formatPageStartEndTime(page);
+  return `- ${time} ${title}`;
 }

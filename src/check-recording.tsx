@@ -1,4 +1,4 @@
-import { launchCommand, LaunchType, showHUD } from "@raycast/api";
+import { launchCommand, LaunchType } from "@raycast/api";
 import { getCurrentInterval } from "../lib/intervals";
 
 export default async function CheckRecoding() {

@@ -10,12 +10,14 @@ import {
   LaunchType,
   PopToRootType,
   closeMainWindow,
+  open,
 } from "@raycast/api";
 import { useForm, FormValidation } from "@raycast/utils";
 import {
   extractPageTitle,
   formatPageTitle,
   pageToClipboardText,
+  formatPageTitleForObsidian,
   buildSearchParams,
   buildRequestParams,
   categoryOptions,
@@ -41,6 +43,15 @@ export default function Command() {
         name: "check-task-timer",
         type: LaunchType.UserInitiated,
       });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function launchObsidian(input: string) {
+    try {
+      const encodedInput = encodeURIComponent(JSON.stringify({ text: input }));
+      open(`raycast://extensions/KevinBatdorf/obsidian/dailyNoteAppendCommand?launchType=userInitiated&arguments=${encodedInput}`);
     } catch (error) {
       console.error(error);
     }
@@ -76,7 +87,6 @@ export default function Command() {
           showToast({ style: Toast.Style.Success, title: "success" });
 
           const page = res.data;
-          Clipboard.copy(pageToClipboardText(page));
 
           if (values.continueRegister) {
             setPostLog((before_value) => `${before_value}\n${formatPageTitle(page)}`);
@@ -87,6 +97,8 @@ export default function Command() {
               launchSelfTimer();
             }
             closeMainWindow({ popToRootType: PopToRootType.Immediate });
+            Clipboard.copy(pageToClipboardText(page));
+            launchObsidian(formatPageTitleForObsidian(page));
           }
         })
         .catch(() => {
@@ -157,7 +169,7 @@ export default function Command() {
         <ActionPanel>
           <Action.SubmitForm onSubmit={handleSubmit} title="Create the Page" />
           <Action
-            title="Set new timer"
+            title="Set New Timer"
             autoFocus={true}
             onAction={() =>
               launchCommand({
@@ -221,7 +233,7 @@ export default function Command() {
           <Form.Dropdown.Item key={`${index}-category`} value={value} title={value} />
         ))}
       </Form.Dropdown>
-       
+
       <Form.TextArea title="振り返り" {...itemProps.reflection} />
       <Form.Checkbox label="引き続き登録する" {...itemProps.continueRegister} />
       <Form.Separator />
