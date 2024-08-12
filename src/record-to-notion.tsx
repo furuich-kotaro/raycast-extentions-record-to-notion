@@ -19,8 +19,9 @@ import {
   pageToClipboardText,
   // formatPageTitleForObsidian,
   buildSearchParams,
-  buildRequestParams,
-  categoryOptions,
+  pageCreateRequestParams,
+  wasteTimeCategoryOptions,
+  activityCategoryOptions,
   effectivityOptions,
   databaseId,
   notionClient,
@@ -80,7 +81,7 @@ export default function Command() {
       showToast({ style: Toast.Style.Animated, title: "Creating the page..." });
 
       notionClient
-        .post(`/pages`, buildRequestParams(values))
+        .post(`/pages`, pageCreateRequestParams(values))
         .then((res) => {
           showToast({ style: Toast.Style.Success, title: "success" });
 
@@ -99,7 +100,8 @@ export default function Command() {
             // launchObsidian(formatPageTitleForObsidian(page));
           }
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error(JSON.stringify(error.response.data, null, 2));
           showToast({ style: Toast.Style.Failure, title: "bad inputs" });
         })
         .finally(() => {
@@ -111,7 +113,8 @@ export default function Command() {
       start_minutes: "0",
       end_minutes: "30",
       effectivity: "B",
-      category: "",
+      wasteTimeCategory: "",
+      activityCategory: "",
       reflection: "",
       continueRegister: false,
     },
@@ -230,9 +233,21 @@ export default function Command() {
           />
         ))}
       </Form.Dropdown>
-      <Form.Dropdown title="時間分類" {...itemProps.category}>
-        {categoryOptions.map((value, index) => (
-          <Form.Dropdown.Item key={`${index}-category`} value={value} title={value} />
+      <Form.Dropdown title="時間分類" {...itemProps.wasteTimeCategory}>
+        <Form.Dropdown.Item key="blank-wasteTimeCategory" value="" title="選択してください" />
+        {wasteTimeCategoryOptions.map((value, index) => (
+          <Form.Dropdown.Item key={`${index}-wasteTimeCategory`} value={value} title={value} />
+        ))}
+      </Form.Dropdown>
+
+      <Form.Dropdown title="カテゴリ" {...itemProps.activityCategory}>
+        <Form.Dropdown.Item key="blank-activityCategory" value="" title="選択してください" />
+        {Object.entries(activityCategoryOptions).map(([section, values], i) => (
+          <Form.Dropdown.Section key={`${i}-activityCategory`} title={section}>
+            {values.map((value, ii) => (
+              <Form.Dropdown.Item key={`${i}-${ii}-activityCategory`} value={value} title={value} />
+            ))}
+          </Form.Dropdown.Section>
         ))}
       </Form.Dropdown>
 

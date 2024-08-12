@@ -12,7 +12,6 @@ export default function CheckTaskTimer() {
         type: LaunchType.UserInitiated,
         name: "update-to-notion",
       });
-
     } catch (error) {
       console.error(error);
     }

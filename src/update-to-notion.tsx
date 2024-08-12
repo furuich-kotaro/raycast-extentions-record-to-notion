@@ -18,13 +18,15 @@ import {
   pageToClipboardText,
   buildSearchParams,
   pageUpdateRequestParams,
-  categoryOptions,
+  wasteTimeCategoryOptions,
+  activityCategoryOptions,
   effectivityOptions,
   databaseId,
   notionClient,
   reflectionProperty,
   effectivityProperty,
-  categoryProperty,
+  wasteTimeCategoryProperty,
+  activityCategoryProperty,
   titleProperty,
   timeProperty,
 } from "../lib/notion";
@@ -32,9 +34,9 @@ import { createInterval } from "../lib/intervals";
 import { FormValues } from "../lib/types";
 
 export default function Command() {
-  const [ updating, setUpdating ] = useState(false);
-  const [ pageLoading, setPageLoading ] = useState(true);
-  const [ pages, setPages ] = useState([]);
+  const [updating, setUpdating] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+  const [pages, setPages] = useState([]);
 
   function isInValidDateFormat(dateString: string) {
     const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
@@ -61,7 +63,7 @@ export default function Command() {
           }
         })
         .catch((error) => {
-          console.error(error);
+          console.error(JSON.stringify(error.response.data, null, 2));
           showToast({ style: Toast.Style.Failure, title: "bad inputs" });
         })
         .finally(() => {
@@ -89,16 +91,18 @@ export default function Command() {
 
   function handlePageChange(pages: any, pageId: string) {
     const page = pages.find((page: any) => page.id == pageId);
-    const tmpReflection = page.properties[reflectionProperty].rich_text[0]
-    const tmpEffectivity = page.properties[effectivityProperty].select
-    const tmpCategory = page.properties[categoryProperty].select
+    const tmpReflection = page.properties[reflectionProperty].rich_text[0];
+    const tmpEffectivity = page.properties[effectivityProperty].select;
+    const tmpWastTimeCategory = page.properties[wasteTimeCategoryProperty].select;
+    const tmpActivityCategory = page.properties[activityCategoryProperty].select;
 
     setValue("title", page.properties[titleProperty].title[0].plain_text);
     setValue("start_minutes", page.properties[timeProperty].date.start.substring(0, 16));
     setValue("end_minutes", page.properties[timeProperty].date.end.substring(0, 16));
     setValue("reflection", tmpReflection ? tmpReflection.plain_text : "");
     setValue("effectivity", tmpEffectivity ? tmpEffectivity.name : "");
-    setValue("category", tmpCategory ? tmpCategory.name : "");
+    setValue("wasteTimeCategory", tmpWastTimeCategory ? tmpWastTimeCategory.name : "");
+    setValue("activityCategory", tmpActivityCategory ? tmpActivityCategory.name : "");
     setValue("pageId", page.id);
   }
 
@@ -114,11 +118,11 @@ export default function Command() {
       })
       .catch((error) => {
         console.error(error);
-        showToast({ style: Toast.Style.Failure,title: "bad inputs" });
+        showToast({ style: Toast.Style.Failure, title: "bad inputs" });
       })
       .finally(() => {
         setPageLoading(false);
-      })
+      });
   }
 
   useEffect(() => {
@@ -127,7 +131,7 @@ export default function Command() {
 
   return (
     <Form
-    isLoading={pageLoading || updating}
+      isLoading={pageLoading || updating}
       actions={
         <ActionPanel>
           <Action.SubmitForm onSubmit={handleSubmit} title="Update the Page" />
@@ -151,7 +155,7 @@ export default function Command() {
             title="ページ"
             {...itemProps.pageId}
             onChange={(newValue) => {
-              handlePageChange(pages, newValue)
+              handlePageChange(pages, newValue);
             }}
           >
             {pages.map((page: any) => (
@@ -167,20 +171,36 @@ export default function Command() {
             defaultValue={false}
             onChange={(newValue) => {
               if (newValue) {
-                formatMinutes
-                setValue("end_minutes", (formatMinutes(0).substring(0, 16)));
+                formatMinutes;
+                setValue("end_minutes", formatMinutes(0).substring(0, 16));
               }
             }}
           />
           <Form.TextArea title="振り返り" {...itemProps.reflection} />
           <Form.Dropdown title="効果" {...itemProps.effectivity}>
             {Object.keys(effectivityOptions).map((key: string) => (
-              <Form.Dropdown.Item key={key} value={key} title={effectivityOptions[key as keyof typeof effectivityOptions]} />
+              <Form.Dropdown.Item
+                key={key}
+                value={key}
+                title={effectivityOptions[key as keyof typeof effectivityOptions]}
+              />
             ))}
           </Form.Dropdown>
-          <Form.Dropdown title="時間分類" {...itemProps.category}>
-            {categoryOptions.map((value, index) => (
-              <Form.Dropdown.Item key={`${index}-category`} value={value} title={value} />
+          <Form.Dropdown title="時間分類" {...itemProps.wasteTimeCategory}>
+            <Form.Dropdown.Item key="blank-wasteTimeCategory" value="" title="選択してください" />
+            {wasteTimeCategoryOptions.map((value, index) => (
+              <Form.Dropdown.Item key={`${index}-wasteTimeCategory`} value={value} title={value} />
+            ))}
+          </Form.Dropdown>
+
+          <Form.Dropdown title="カテゴリ" {...itemProps.activityCategory}>
+            <Form.Dropdown.Item key="blank-activityCategory" value="" title="選択してください" />
+            {Object.entries(activityCategoryOptions).map(([section, values], i) => (
+              <Form.Dropdown.Section key={`${i}-activityCategory`} title={section}>
+                {values.map((value, ii) => (
+                  <Form.Dropdown.Item key={`${i}-${ii}-activityCategory`} value={value} title={value} />
+                ))}
+              </Form.Dropdown.Section>
             ))}
           </Form.Dropdown>
           <Form.Checkbox label="引き続き更新する" {...itemProps.continueUpdate} />

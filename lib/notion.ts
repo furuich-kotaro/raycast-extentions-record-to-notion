@@ -1,22 +1,19 @@
 import axios from "axios";
 import { getPreferenceValues } from "@raycast/api";
-import {
-  Preferences,
-  FormValues,
-  pageObject,
-} from "./types";
+import { Preferences, FormValues, pageObject } from "./types";
 
 const preferences = getPreferenceValues<Preferences>();
 
-export const databaseId: string = preferences.databaseId
-export const titleProperty: string = preferences.titleProperty
-export const timeProperty: string = preferences.timeProperty
-export const reflectionProperty: string = preferences.reflectionProperty
-export const effectivityProperty: string = preferences.effectivityProperty
-export const categoryProperty: string = preferences.categoryProperty
-export const expectedWorkTimeProperty: string = preferences.expectedWorkTimeProperty
+export const databaseId: string = preferences.databaseId;
+export const titleProperty: string = preferences.titleProperty;
+export const timeProperty: string = preferences.timeProperty;
+export const reflectionProperty: string = preferences.reflectionProperty;
+export const effectivityProperty: string = preferences.effectivityProperty;
+export const wasteTimeCategoryProperty: string = preferences.wasteTimeCategoryProperty;
+export const activityCategoryProperty: string = preferences.activityCategoryProperty;
+export const expectedWorkTimeProperty: string = preferences.expectedWorkTimeProperty;
 
-export const categoryOptions = [
+export const wasteTimeCategoryOptions = [
   "浪費",
   "徒労時間（見返りがない時間）",
   "他人時間（他人がやっても問題ないことをしている時間）",
@@ -24,13 +21,38 @@ export const categoryOptions = [
   "邪魔時間（無駄話など予期せぬ邪魔に費やした時間）",
   "対処時間（不注意や準備不足により、必要より多く使ってしまった時間）",
   "過信時間（見積もりが甘かったせいで、タスクが進まなかった時間）",
-  "",
 ];
 
 export const effectivityOptions = {
-  "A": "Good",
-  "B": "Not bad",
-  "C": "Bod",
+  A: "Good",
+  B: "Not bad",
+  C: "Bod",
+} as const;
+
+export const activityCategoryOptions = {
+  Work: [
+    "開発(コーディング)",
+    "開発(コーディング以外)",
+    "改善作業",
+    "調査タスク",
+    "会議・打ち合わせ",
+    "Slackやりとり",
+    "雑務",
+  ],
+  Life: [
+    "移動",
+    "休憩",
+    "生活時間",
+    "睡眠",
+    "運動",
+    "娯楽(能動的)",
+    "娯楽(受動的)",
+    "雑談",
+    "勉強",
+    "読書",
+    "プライベート",
+  ],
+  Other: ["不明"],
 } as const;
 
 export const notionClient = axios.create({
@@ -62,9 +84,7 @@ export function formatMinutes(minutesToAdd: number) {
   return `${year}-${month}-${day}T${hours}:${minutes}:00${offsetSign}${offsetHours}:${offsetMinutes}`;
 }
 
-export function buildRequestParams(values: FormValues) {
-  const start_minutes = formatMinutes(Number(values.start_minutes));
-  const end_minutes = formatMinutes(Number(values.start_minutes) + Number(values.end_minutes));
+function commonPageParams(values: FormValues, startMinutes: string, endMinutes: string) {
   const params = {
     parent: { database_id: databaseId },
     properties: {
@@ -73,8 +93,8 @@ export function buildRequestParams(values: FormValues) {
       },
       [timeProperty]: {
         date: {
-          start: start_minutes,
-          end: end_minutes,
+          start: startMinutes,
+          end: endMinutes,
         },
       },
       [reflectionProperty]: {
@@ -91,10 +111,18 @@ export function buildRequestParams(values: FormValues) {
     },
   };
 
-  if (values.category.length > 0) {
-    params.properties[categoryProperty] = {
+  if (values.wasteTimeCategory.length > 0) {
+    params.properties[wasteTimeCategoryProperty] = {
       select: {
-        name: values.category,
+        name: values.wasteTimeCategory,
+      },
+    };
+  }
+
+  if (values.activityCategory.length > 0) {
+    params.properties[activityCategoryProperty] = {
+      select: {
+        name: values.activityCategory,
       },
     };
   }
@@ -102,44 +130,17 @@ export function buildRequestParams(values: FormValues) {
   return params;
 }
 
+export function pageCreateRequestParams(values: FormValues) {
+  const startMinutes = formatMinutes(Number(values.start_minutes));
+  const endMinutes = formatMinutes(Number(values.start_minutes) + Number(values.end_minutes));
+  return commonPageParams(values, startMinutes, endMinutes);
+}
+
 export function pageUpdateRequestParams(values: FormValues) {
-  const start_minutes = `${values.start_minutes}:00.000+09:00`
-  const end_minutes = `${values.end_minutes}:00.000+09:00`
-
-  const params = {
-    parent: { database_id: databaseId },
-    properties: {
-      [titleProperty]: {
-        title: [
-          { text: { content: values.title } }
-        ]
-      },
-      [timeProperty]: {
-        date: {
-          start: start_minutes,
-          end: end_minutes
-        }
-      },
-      [reflectionProperty]: {
-        rich_text : [
-          { text: { content: values.reflection } }
-        ]
-      },
-      [effectivityProperty]: {
-        select: {
-          name: values.effectivity
-        }
-      }
-    }
-  }
-
-  if (values.category.length > 0) {
-    params.properties[categoryProperty] = {
-      select: {
-        name: values.category,
-      },
-    };
-  }
+  const startMinutes = `${values.start_minutes}:00.000+09:00`;
+  const endMinutes = `${values.end_minutes}:00.000+09:00`;
+  const params = commonPageParams(values, startMinutes, endMinutes);
+  delete params.properties[expectedWorkTimeProperty];
 
   return params;
 }
@@ -155,20 +156,20 @@ export function buildSearchParams(page_size: number = 5): any {
         {
           property: timeProperty,
           date: { before: formatMinutes(120) },
-        }, 
+        },
       ],
     },
-    sorts: [ { property: timeProperty, direction: "descending" }],
-    page_size: page_size
-  }
+    sorts: [{ property: timeProperty, direction: "descending" }],
+    page_size: page_size,
+  };
 
   return params;
 }
 
 function formatPageStartEndTime(page: pageObject): string {
   const dateEvent = page.properties[timeProperty];
-  const start_time = dateEvent.date.start.substring(11, 16)
-  const end_time = dateEvent.date.end.substring(11, 16)
+  const start_time = dateEvent.date.start.substring(11, 16);
+  const end_time = dateEvent.date.end.substring(11, 16);
   return `${start_time} ~ ${end_time}`;
 }
 
@@ -184,7 +185,7 @@ export function extractPageTitle(page: pageObject): string {
 
 export function pageToClipboardText(page: pageObject): string {
   const dateEvent = page.properties[timeProperty];
-  const tmpReflection = page.properties[reflectionProperty].rich_text[0]
+  const tmpReflection = page.properties[reflectionProperty].rich_text[0];
 
   const title = page.properties[titleProperty].title[0].plain_text;
   const time = formatPageStartEndTime(page);

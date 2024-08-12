@@ -5,7 +5,8 @@ export type Preferences = {
   timeProperty: string;
   reflectionProperty: string;
   effectivityProperty: string;
-  categoryProperty: string;
+  wasteTimeCategoryProperty: string;
+  activityCategoryProperty: string;
   expectedWorkTimeProperty: string;
 };
 
@@ -15,7 +16,8 @@ export type FormValues = {
   start_minutes: string;
   end_minutes: string;
   effectivity: string;
-  category: string;
+  wasteTimeCategory: string;
+  activityCategory: string;
   reflection: string;
   continueRegister: boolean;
   continueUpdate: boolean;
@@ -30,7 +32,7 @@ export type pageObject = {
     object: string;
     id: string;
   };
-  last_edited_by:  {
+  last_edited_by: {
     object: string;
     id: string;
   };

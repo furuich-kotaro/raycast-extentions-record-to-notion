@@ -51,9 +51,16 @@
       "required": true
     },
     {
-      "name": "categoryProperty",
-      "title": "categoryProperty",
-      "description": "categoryProperty",
+      "name": "wasteTimeCategoryProperty",
+      "title": "wasteTimeCategoryProperty",
+      "description": "wasteTimeCategoryProperty",
+      "type": "textfield",
+      "required": true
+    },
+    {
+      "name": "activityCategoryProperty",
+      "title": "activityCategoryProperty",
+      "description": "activityCategoryProperty",
       "type": "textfield",
       "required": true
     },

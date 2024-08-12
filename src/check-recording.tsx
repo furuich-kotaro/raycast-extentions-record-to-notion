@@ -10,7 +10,6 @@ export default async function CheckRecoding() {
         type: LaunchType.UserInitiated,
         name: "record-to-notion",
       });
-
     } catch (error) {
       console.error(error);
     }
