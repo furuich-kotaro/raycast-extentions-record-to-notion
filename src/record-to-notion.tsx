@@ -17,7 +17,7 @@ import {
   extractPageTitle,
   formatPageTitle,
   pageToClipboardText,
-  formatPageTitleForObsidian,
+  // formatPageTitleForObsidian,
   buildSearchParams,
   buildRequestParams,
   categoryOptions,
@@ -27,10 +27,7 @@ import {
   timeProperty,
 } from "../lib/notion";
 import { createInterval } from "../lib/intervals";
-import {
-  pageObject,
-  FormValues,
-} from "../lib/types";
+import { pageObject, FormValues } from "../lib/types";
 
 export default function Command() {
   const [creating, setCreating] = useState(false);
@@ -51,7 +48,9 @@ export default function Command() {
   function launchObsidian(input: string) {
     try {
       const encodedInput = encodeURIComponent(JSON.stringify({ text: input }));
-      open(`raycast://extensions/KevinBatdorf/obsidian/dailyNoteAppendCommand?launchType=userInitiated&arguments=${encodedInput}`);
+      open(
+        `raycast://extensions/KevinBatdorf/obsidian/dailyNoteAppendCommand?launchType=userInitiated&arguments=${encodedInput}`,
+      );
     } catch (error) {
       console.error(error);
     }
@@ -65,13 +64,12 @@ export default function Command() {
 
   function getDifferenceInMinutes(dateString: string) {
     const inputTime = new Date(dateString).getTime();
-    const currentTime = new Date().getTime()
-    const differenceInMilliseconds = currentTime - inputTime
+    const currentTime = new Date().getTime();
+    const differenceInMilliseconds = currentTime - inputTime;
     const differenceInMinutes = Math.floor(differenceInMilliseconds / 60000);
 
     return differenceInMinutes;
   }
-
 
   const { handleSubmit, itemProps, setValue } = useForm<FormValues>({
     onSubmit(values) {
@@ -98,7 +96,7 @@ export default function Command() {
             }
             closeMainWindow({ popToRootType: PopToRootType.Immediate });
             Clipboard.copy(pageToClipboardText(page));
-            launchObsidian(formatPageTitleForObsidian(page));
+            // launchObsidian(formatPageTitleForObsidian(page));
           }
         })
         .catch(() => {
@@ -225,7 +223,11 @@ export default function Command() {
       )}
       <Form.Dropdown title="効果" {...itemProps.effectivity}>
         {Object.keys(effectivityOptions).map((key: string) => (
-          <Form.Dropdown.Item key={key} value={key} title={effectivityOptions[key as keyof typeof effectivityOptions]} />
+          <Form.Dropdown.Item
+            key={key}
+            value={key}
+            title={effectivityOptions[key as keyof typeof effectivityOptions]}
+          />
         ))}
       </Form.Dropdown>
       <Form.Dropdown title="時間分類" {...itemProps.category}>
