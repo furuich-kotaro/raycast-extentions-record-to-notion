@@ -35,6 +35,7 @@ export const activityCategoryOptions = {
     "開発(コーディング以外)",
     "改善作業",
     "調査タスク",
+    "コードレビュー",
     "会議・打ち合わせ",
     "Slackやりとり",
     "雑務",
