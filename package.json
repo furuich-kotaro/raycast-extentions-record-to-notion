@@ -109,7 +109,7 @@
   "dependencies": {
     "@raycast/api": "^1.64.4",
     "@raycast/utils": "^1.10.1",
-    "axios": "^1.6.3",
+    "axios": "^1.7.4",
     "child_process": "^1.0.2"
   },
   "devDependencies": {
