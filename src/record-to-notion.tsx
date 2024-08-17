@@ -89,6 +89,7 @@ export default function Command() {
 
           if (values.continueRegister) {
             setPostLog((before_value) => `${before_value}\n${formatPageTitle(page)}`);
+            setLatestPage(page);
           } else {
             const taskMinutes = calculateMinutes(values.start_minutes, values.end_minutes);
             if (taskMinutes > 0) {
