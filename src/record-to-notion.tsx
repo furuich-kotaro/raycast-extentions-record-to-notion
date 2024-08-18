@@ -183,7 +183,21 @@ export default function Command() {
         </ActionPanel>
       }
     >
-      <Form.Checkbox
+      <Form.TextField title="タイトル" {...itemProps.title} />
+      <Form.TextField title="開始" {...itemProps.start_minutes} />
+      <Form.TextField title="作業時間" {...itemProps.end_minutes} />
+      <Form.Dropdown title="カテゴリ" {...itemProps.activityCategory}>
+        <Form.Dropdown.Item key="blank-activityCategory" value="" title="選択してください" />
+        {Object.entries(activityCategoryOptions).map(([section, values], i) => (
+          <Form.Dropdown.Section key={`${i}-activityCategory`} title={section}>
+            {values.map((value, ii) => (
+              <Form.Dropdown.Item key={`${i}-${ii}-activityCategory`} value={value} title={value} />
+            ))}
+          </Form.Dropdown.Section>
+        ))}
+      </Form.Dropdown>
+      <Form.Checkbox label="引き続き登録する" {...itemProps.continueRegister} />
+      {/* <Form.Checkbox
         id="setTimer"
         label="15分のタイマーをセット"
         defaultValue={false}
@@ -193,10 +207,7 @@ export default function Command() {
             closeMainWindow({ popToRootType: PopToRootType.Immediate });
           }
         }}
-      />
-      <Form.TextField title="タイトル" {...itemProps.title} />
-      <Form.TextField title="開始" {...itemProps.start_minutes} />
-      <Form.TextField title="作業時間" {...itemProps.end_minutes} />
+      /> */}
       {latestPage?.properties && (
         <>
           <Form.Checkbox
@@ -225,6 +236,8 @@ export default function Command() {
           />
         </>
       )}
+
+      <Form.Separator />
       <Form.Dropdown title="効果" {...itemProps.effectivity}>
         {Object.keys(effectivityOptions).map((key: string) => (
           <Form.Dropdown.Item
@@ -240,21 +253,7 @@ export default function Command() {
           <Form.Dropdown.Item key={`${index}-wasteTimeCategory`} value={value} title={value} />
         ))}
       </Form.Dropdown>
-
-      <Form.Dropdown title="カテゴリ" {...itemProps.activityCategory}>
-        <Form.Dropdown.Item key="blank-activityCategory" value="" title="選択してください" />
-        {Object.entries(activityCategoryOptions).map(([section, values], i) => (
-          <Form.Dropdown.Section key={`${i}-activityCategory`} title={section}>
-            {values.map((value, ii) => (
-              <Form.Dropdown.Item key={`${i}-${ii}-activityCategory`} value={value} title={value} />
-            ))}
-          </Form.Dropdown.Section>
-        ))}
-      </Form.Dropdown>
-
       <Form.TextArea title="振り返り" {...itemProps.reflection} />
-      <Form.Checkbox label="引き続き登録する" {...itemProps.continueRegister} />
-      <Form.Separator />
       <Form.TextArea id="pastLog" title="過去ログ" value={postLog} onChange={() => {}} />
     </Form>
   );
