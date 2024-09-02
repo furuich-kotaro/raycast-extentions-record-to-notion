@@ -30,7 +30,7 @@ import {
   titleProperty,
   timeProperty,
 } from "../lib/notion";
-import { createInterval } from "../lib/intervals";
+// import { createInterval } from "../lib/intervals";
 import { FormValues } from "../lib/types";
 
 export default function Command() {

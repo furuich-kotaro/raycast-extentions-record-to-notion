@@ -26,6 +26,8 @@ import {
   databaseId,
   notionClient,
   timeProperty,
+  wasteTimeCategoryProperty,
+  activityCategoryProperty,
 } from "../lib/notion";
 import { createInterval } from "../lib/intervals";
 import { pageObject, FormValues } from "../lib/types";
@@ -160,6 +162,15 @@ export default function Command() {
       });
   }
 
+  const handlePageCopy = (page: any) => {
+    const tmpWastTimeCategory = page.properties[wasteTimeCategoryProperty].select;
+    const tmpActivityCategory = page.properties[activityCategoryProperty].select;
+
+    setValue("title", extractPageTitle(latestPage));
+    setValue("wasteTimeCategory", tmpWastTimeCategory ? tmpWastTimeCategory.name : "");
+    setValue("activityCategory", tmpActivityCategory ? tmpActivityCategory.name : "");
+  };
+
   useEffect(() => {
     fetchLatestPages();
   }, []);
@@ -230,7 +241,7 @@ export default function Command() {
             defaultValue={false}
             onChange={(newValue) => {
               if (newValue) {
-                setValue("title", extractPageTitle(latestPage));
+                handlePageCopy(latestPage);
               }
             }}
           />
