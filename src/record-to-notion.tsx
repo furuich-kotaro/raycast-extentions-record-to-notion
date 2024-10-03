@@ -92,6 +92,13 @@ export default function Command() {
           if (values.continueRegister) {
             setPostLog((before_value) => `${before_value}\n${formatPageTitle(page)}`);
             setLatestPage(page);
+            setValue("title", "");
+            setValue("start_minutes", (Number(values.start_minutes) + Number(values.end_minutes)).toString());
+            setValue("end_minutes", "30");
+            setValue("effectivity", "B");
+            setValue("wasteTimeCategory", "");
+            setValue("activityCategory", "");
+            setValue("reflection", "");
           } else {
             const taskMinutes = calculateMinutes(values.start_minutes, values.end_minutes);
             if (taskMinutes > 0) {
