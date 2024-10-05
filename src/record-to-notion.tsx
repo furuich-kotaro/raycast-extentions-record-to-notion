@@ -1,36 +1,37 @@
-import { useState, useEffect } from "react";
 import {
-  Form,
-  ActionPanel,
   Action,
+  ActionPanel,
   Clipboard,
-  showToast,
-  Toast,
+  closeMainWindow,
+  Form,
   launchCommand,
   LaunchType,
-  PopToRootType,
-  closeMainWindow,
   open,
+  PopToRootType,
+  showToast,
+  Toast,
 } from "@raycast/api";
-import { useForm, FormValidation } from "@raycast/utils";
+import { FormValidation, useForm } from "@raycast/utils";
+import { useEffect, useState } from "react";
+import { createInterval } from "../lib/intervals";
 import {
-  extractPageTitle,
-  formatPageTitle,
-  pageToClipboardText,
+  activityCategoryOptions,
+  activityCategoryProperty,
   // formatPageTitleForObsidian,
   buildSearchParams,
-  pageCreateRequestParams,
-  wasteTimeCategoryOptions,
-  activityCategoryOptions,
-  effectivityOptions,
   databaseId,
+  effectivityOptions,
+  extractPageTitle,
+  formatPageTitle,
   notionClient,
+  pageCreateRequestParams,
+  pageToClipboardText,
   timeProperty,
+  wasteTimeCategoryOptions,
   wasteTimeCategoryProperty,
-  activityCategoryProperty,
 } from "../lib/notion";
-import { createInterval } from "../lib/intervals";
-import { pageObject, FormValues } from "../lib/types";
+import { FormValues, pageObject } from "../lib/types";
+import { setInputtingFlag, removeInputtingFlag, getInputtingFlag } from "../lib/inputtingFlag";
 
 export default function Command() {
   const [creating, setCreating] = useState(false);
@@ -180,6 +181,13 @@ export default function Command() {
 
   useEffect(() => {
     fetchLatestPages();
+  }, []);
+
+  useEffect(() => {
+    setInputtingFlag();
+    return () => {
+      removeInputtingFlag();
+    };
   }, []);
 
   return (

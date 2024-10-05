@@ -1,37 +1,38 @@
-import { useState, useEffect } from "react";
 import {
-  Form,
-  ActionPanel,
   Action,
+  ActionPanel,
   Clipboard,
-  showToast,
-  Toast,
+  closeMainWindow,
+  Form,
   launchCommand,
   LaunchType,
   PopToRootType,
-  closeMainWindow,
+  showToast,
+  Toast,
 } from "@raycast/api";
-import { useForm, FormValidation } from "@raycast/utils";
+import { FormValidation, useForm } from "@raycast/utils";
+import { useEffect, useState } from "react";
 import {
+  activityCategoryOptions,
+  activityCategoryProperty,
+  buildSearchParams,
+  databaseId,
+  effectivityOptions,
+  effectivityProperty,
   formatMinutes,
   formatPageTitle,
-  pageToClipboardText,
-  buildSearchParams,
-  pageUpdateRequestParams,
-  wasteTimeCategoryOptions,
-  activityCategoryOptions,
-  effectivityOptions,
-  databaseId,
   notionClient,
+  pageToClipboardText,
+  pageUpdateRequestParams,
   reflectionProperty,
-  effectivityProperty,
-  wasteTimeCategoryProperty,
-  activityCategoryProperty,
-  titleProperty,
   timeProperty,
+  titleProperty,
+  wasteTimeCategoryOptions,
+  wasteTimeCategoryProperty,
 } from "../lib/notion";
 // import { createInterval } from "../lib/intervals";
 import { FormValues } from "../lib/types";
+import { setInputtingFlag, removeInputtingFlag } from "../lib/inputtingFlag";
 
 export default function Command() {
   const [updating, setUpdating] = useState(false);
@@ -127,6 +128,13 @@ export default function Command() {
 
   useEffect(() => {
     fetchLatestPages();
+  }, []);
+
+  useEffect(() => {
+    setInputtingFlag();
+    return () => {
+      removeInputtingFlag();
+    };
   }, []);
 
   return (

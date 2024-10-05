@@ -2,11 +2,13 @@ import { MenuBarExtra, launchCommand, LaunchType } from "@raycast/api";
 import { useState } from "react";
 import { getCurrentInterval, resetInterval, Interval, duration, progress } from "../lib/intervals";
 import { secondsToTime } from "../lib/secondsToTime";
+import { getInputtingFlag } from "../lib/inputtingFlag";
 
 export default function CheckTaskTimer() {
   const [currentInterval, setCurrentInterval] = useState<Interval | undefined>(getCurrentInterval());
+  const isInputting = getInputtingFlag();
 
-  if (currentInterval && progress(currentInterval) >= 100) {
+  if (currentInterval && progress(currentInterval) >= 100 && !isInputting) {
     try {
       launchCommand({
         type: LaunchType.UserInitiated,
