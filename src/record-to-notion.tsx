@@ -169,6 +169,14 @@ export default function Command() {
       });
   }
 
+  const setBreakTime = (newValue: boolean, minutes: string) => {
+    if (newValue) {
+      setValue("title", "休憩");
+      setValue("end_minutes", minutes);
+      setValue("activityCategory", "休憩");
+    }
+  };
+
   const handlePageCopy = (page: any) => {
     const tmpWastTimeCategory = page.properties[wasteTimeCategoryProperty].select;
     const tmpActivityCategory = page.properties[activityCategoryProperty].select;
@@ -214,6 +222,18 @@ export default function Command() {
           </Form.Dropdown.Section>
         ))}
       </Form.Dropdown>
+      <Form.Checkbox
+        id="breakTime5min"
+        label="5分休憩"
+        defaultValue={false}
+        onChange={(newValue) => setBreakTime(newValue, "5")}
+      />
+      <Form.Checkbox
+        id="breakTime15min"
+        label="15分休憩"
+        defaultValue={false}
+        onChange={(newValue) => setBreakTime(newValue, "15")}
+      />
       <Form.Checkbox label="引き続き登録する" {...itemProps.continueRegister} />
       {/* <Form.Checkbox
         id="setTimer"
