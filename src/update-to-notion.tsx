@@ -29,6 +29,7 @@ import {
   activityCategoryProperty,
   titleProperty,
   timeProperty,
+  setActivityCategoryFromTitle,
 } from "../lib/notion";
 // import { createInterval } from "../lib/intervals";
 import { FormValues } from "../lib/types";
@@ -124,6 +125,10 @@ export default function Command() {
         setPageLoading(false);
       });
   }
+
+  useEffect(() => {
+    setActivityCategoryFromTitle(setValue, itemProps.title.value ?? "");
+  }, [itemProps.title.value]);
 
   useEffect(() => {
     fetchLatestPages();

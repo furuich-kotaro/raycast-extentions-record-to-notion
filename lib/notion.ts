@@ -208,3 +208,38 @@ export function formatPageTitleForObsidian(page: pageObject): string {
   const time = formatPageStartEndTime(page);
   return `- ${time} ${title}`;
 }
+
+export const setActivityCategoryFromTitle = (
+  setValue: <K extends keyof FormValues>(id: K, value: FormValues[K]) => void,
+  title: string,
+) => {
+  const timer = setTimeout(() => {
+    const lowerTitle = title.toLowerCase();
+    if (/実装|開発|改善|修正/.test(lowerTitle)) {
+      setValue("activityCategory", "開発(コーディング)");
+    } else if (/動作確認|テスト|リリース/.test(lowerTitle)) {
+      setValue("activityCategory", "開発(コーディング以外)");
+    } else if (/調査|QA/.test(lowerTitle)) {
+      setValue("activityCategory", "調査タスク");
+    } else if (/レビュ|review|相談/.test(lowerTitle)) {
+      setValue("activityCategory", "コードレビュー");
+    } else if (/会議|打ち合わせ|MTG|定例|1on1/.test(lowerTitle)) {
+      setValue("activityCategory", "会議・打ち合わせ");
+    } else if (/slack返信/.test(lowerTitle)) {
+      setValue("activityCategory", "Slackやりとり");
+    } else if (/帰宅|移動|出勤/.test(lowerTitle)) {
+      setValue("activityCategory", "移動");
+    } else if (/休憩|昼/.test(lowerTitle)) {
+      setValue("activityCategory", "休憩");
+    } else if (/夕食|身支度|シャワ|風呂/.test(lowerTitle)) {
+      setValue("activityCategory", "生活時間");
+    } else if (/ランニング|運動|腹筋/.test(lowerTitle)) {
+      setValue("activityCategory", "運動");
+    } else if (/睡眠/.test(lowerTitle)) {
+      setValue("activityCategory", "睡眠");
+    } else if (/漫画|アニメ|youtube|tver|sns|tiktok/i.test(lowerTitle)) {
+      setValue("activityCategory", "娯楽(受動的)");
+    }
+  }, 300);
+  return () => clearTimeout(timer);
+};

@@ -28,6 +28,7 @@ import {
   timeProperty,
   wasteTimeCategoryProperty,
   activityCategoryProperty,
+  setActivityCategoryFromTitle,
 } from "../lib/notion";
 import { createInterval } from "../lib/intervals";
 import { pageObject, FormValues } from "../lib/types";
@@ -187,6 +188,10 @@ export default function Command() {
   };
 
   useEffect(() => {
+    setActivityCategoryFromTitle(setValue, itemProps.title.value ?? "");
+  }, [itemProps.title.value]);
+
+  useEffect(() => {
     fetchLatestPages();
   }, []);
 
@@ -209,7 +214,7 @@ export default function Command() {
         </ActionPanel>
       }
     >
-      <Form.TextField title="タイトル" {...itemProps.title} />
+      <Form.TextField title="タイトル" {...itemProps.title} autoFocus={true} />
       <Form.TextField title="開始" {...itemProps.start_minutes} />
       <Form.TextField title="作業時間" {...itemProps.end_minutes} />
       <Form.Dropdown title="カテゴリ" {...itemProps.activityCategory}>
