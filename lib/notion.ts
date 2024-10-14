@@ -51,7 +51,9 @@ export const activityCategoryOptions = {
     "雑談",
     "勉強",
     "読書",
+    "振り返り・反省",
     "プライベート",
+    "アウトドア",
   ],
   Other: ["不明"],
 } as const;
@@ -239,6 +241,8 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "睡眠");
     } else if (/漫画|アニメ|youtube|tver|sns|tiktok/i.test(lowerTitle)) {
       setValue("activityCategory", "娯楽(受動的)");
+    } else if (/振り返り|反省|ログ/.test(lowerTitle)) {
+      setValue("activityCategory", "振り返り・反省");
     }
   }, 300);
   return () => clearTimeout(timer);
