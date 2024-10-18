@@ -30,7 +30,7 @@ import {
   activityCategoryProperty,
   setActivityCategoryFromTitle,
 } from "../lib/notion";
-import { createInterval } from "../lib/intervals";
+import { createInterval, getCurrentInterval, progress } from "../lib/intervals";
 import { pageObject, FormValues } from "../lib/types";
 
 export default function Command() {
@@ -193,6 +193,13 @@ export default function Command() {
 
   useEffect(() => {
     fetchLatestPages();
+  }, []);
+
+  useEffect(() => {
+    const currentInterval = getCurrentInterval();
+    if (!currentInterval) {
+      createInterval(2);
+    }
   }, []);
 
   return (
