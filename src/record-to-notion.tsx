@@ -30,7 +30,7 @@ import {
   activityCategoryProperty,
   setActivityCategoryFromTitle,
 } from "../lib/notion";
-import { createInterval, getCurrentInterval, progress } from "../lib/intervals";
+import { createInterval } from "../lib/intervals";
 import { pageObject, FormValues } from "../lib/types";
 
 export default function Command() {
@@ -92,12 +92,14 @@ export default function Command() {
 
           const taskMinutes = calculateMinutes(values.start_minutes, values.end_minutes);
 
-          if (values.continueRegister && taskMinutes < 0) {
+          if (values.continueRegister && taskMinutes <= 0) {
+            const newStartMinutes = (Number(values.start_minutes) + Number(values.end_minutes)).toString();
+            const newEndMinutes = Number(newStartMinutes) > 0 ? newStartMinutes : "30";
             setPostLog((before_value) => `${before_value}\n${formatPageTitle(page)}`);
             setLatestPage(page);
             setValue("title", "");
-            setValue("start_minutes", (Number(values.start_minutes) + Number(values.end_minutes)).toString());
-            setValue("end_minutes", "30");
+            setValue("start_minutes", newStartMinutes);
+            setValue("end_minutes", newEndMinutes);
             setValue("effectivity", "B");
             setValue("wasteTimeCategory", "");
             setValue("activityCategory", "");
@@ -197,11 +199,8 @@ export default function Command() {
   }, []);
 
   useEffect(() => {
-    const currentInterval = getCurrentInterval();
-    if (!currentInterval) {
-      createInterval(2);
-    }
-  }, []);
+    createInterval(1);
+  }, [itemProps.title.value, itemProps.end_minutes.value]);
 
   return (
     <Form

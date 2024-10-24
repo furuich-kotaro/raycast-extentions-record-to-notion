@@ -31,7 +31,7 @@ import {
   timeProperty,
   setActivityCategoryFromTitle,
 } from "../lib/notion";
-import { createInterval, getCurrentInterval, progress } from "../lib/intervals";
+import { createInterval } from "../lib/intervals";
 import { FormValues } from "../lib/types";
 
 export default function Command() {
@@ -135,11 +135,8 @@ export default function Command() {
   }, []);
 
   useEffect(() => {
-    const currentInterval = getCurrentInterval();
-    if (!currentInterval) {
-      createInterval(2);
-    }
-  }, []);
+    createInterval(1);
+  }, [itemProps.title.value, itemProps.end_minutes.value]);
 
   return (
     <Form
