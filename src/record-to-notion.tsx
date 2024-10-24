@@ -90,7 +90,9 @@ export default function Command() {
 
           const page = res.data;
 
-          if (values.continueRegister) {
+          const taskMinutes = calculateMinutes(values.start_minutes, values.end_minutes);
+
+          if (values.continueRegister && taskMinutes < 0) {
             setPostLog((before_value) => `${before_value}\n${formatPageTitle(page)}`);
             setLatestPage(page);
             setValue("title", "");
@@ -101,7 +103,6 @@ export default function Command() {
             setValue("activityCategory", "");
             setValue("reflection", "");
           } else {
-            const taskMinutes = calculateMinutes(values.start_minutes, values.end_minutes);
             if (taskMinutes > 0) {
               createInterval(taskMinutes);
               launchSelfTimer();
