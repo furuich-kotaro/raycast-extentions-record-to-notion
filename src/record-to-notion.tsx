@@ -75,7 +75,7 @@ export default function Command() {
     return differenceInMinutes;
   }
 
-  const { handleSubmit, itemProps, setValue } = useForm<FormValues>({
+  const { handleSubmit, itemProps, setValue, focus } = useForm<FormValues>({
     onSubmit(values) {
       if (creating) {
         return;
@@ -104,6 +104,7 @@ export default function Command() {
             setValue("wasteTimeCategory", "");
             setValue("activityCategory", "");
             setValue("reflection", "");
+            focus("title");
           } else {
             if (taskMinutes > 0) {
               createInterval(taskMinutes);

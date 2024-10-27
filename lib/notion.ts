@@ -51,6 +51,7 @@ export const activityCategoryOptions = {
     "雑談",
     "勉強",
     "読書",
+    "情報収集",
     "振り返り・反省",
     "プライベート",
     "アウトドア",
@@ -243,6 +244,8 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "娯楽(受動的)");
     } else if (/振り返り|反省|ログ/.test(lowerTitle)) {
       setValue("activityCategory", "振り返り・反省");
+    } else if (/情報収集|feedly/.test(lowerTitle)) {
+      setValue("activityCategory", "情報収集");
     }
   }, 300);
   return () => clearTimeout(timer);
