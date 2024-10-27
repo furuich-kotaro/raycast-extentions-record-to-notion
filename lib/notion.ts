@@ -239,7 +239,7 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "運動");
     } else if (/睡眠/.test(lowerTitle)) {
       setValue("activityCategory", "睡眠");
-    } else if (/漫画|アニメ|youtube|tver|sns|tiktok/i.test(lowerTitle)) {
+    } else if (/漫画|アニメ|youtube|tver|sns|tiktok|ダラダラ|だらだら/i.test(lowerTitle)) {
       setValue("activityCategory", "娯楽(受動的)");
     } else if (/振り返り|反省|ログ/.test(lowerTitle)) {
       setValue("activityCategory", "振り返り・反省");
