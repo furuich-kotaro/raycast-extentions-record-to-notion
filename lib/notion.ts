@@ -228,7 +228,7 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "コードレビュー");
     } else if (/会議|打ち合わせ|MTG|定例|1on1/.test(lowerTitle)) {
       setValue("activityCategory", "会議・打ち合わせ");
-    } else if (/slack返信/.test(lowerTitle)) {
+    } else if (/slack/.test(lowerTitle)) {
       setValue("activityCategory", "Slackやりとり");
     } else if (/帰宅|移動|出勤/.test(lowerTitle)) {
       setValue("activityCategory", "移動");
