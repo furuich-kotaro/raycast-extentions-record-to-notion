@@ -222,7 +222,7 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "開発(コーディング)");
     } else if (/動作確認|テスト|リリース/.test(lowerTitle)) {
       setValue("activityCategory", "開発(コーディング以外)");
-    } else if (/調査|QA/.test(lowerTitle)) {
+    } else if (/調査|QA|設計/.test(lowerTitle)) {
       setValue("activityCategory", "調査タスク");
     } else if (/レビュ|review|相談/.test(lowerTitle)) {
       setValue("activityCategory", "コードレビュー");
@@ -234,7 +234,7 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "移動");
     } else if (/休憩|昼/.test(lowerTitle)) {
       setValue("activityCategory", "休憩");
-    } else if (/夕食|身支度|シャワ|風呂/.test(lowerTitle)) {
+    } else if (/夕食|身支度|シャワ|風呂|歯磨き|掃除|片付け/.test(lowerTitle)) {
       setValue("activityCategory", "生活時間");
     } else if (/ランニング|運動|腹筋/.test(lowerTitle)) {
       setValue("activityCategory", "運動");
