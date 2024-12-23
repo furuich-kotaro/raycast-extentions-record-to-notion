@@ -13,6 +13,7 @@ import {
 } from "@raycast/api";
 import { useForm, FormValidation } from "@raycast/utils";
 import {
+  extractPageTitle,
   formatMinutes,
   formatPageTitle,
   pageToClipboardText,
@@ -97,7 +98,7 @@ export default function Command() {
     const tmpWastTimeCategory = page.properties[wasteTimeCategoryProperty].select;
     const tmpActivityCategory = page.properties[activityCategoryProperty].select;
 
-    setValue("title", page.properties[titleProperty].title[0].plain_text);
+    setValue("title", extractPageTitle(page));
     setValue("start_minutes", page.properties[timeProperty].date.start.substring(0, 16));
     setValue("end_minutes", page.properties[timeProperty].date.end.substring(0, 16));
     setValue("reflection", tmpReflection ? tmpReflection.plain_text : "");

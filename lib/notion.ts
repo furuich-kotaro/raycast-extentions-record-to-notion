@@ -3,6 +3,7 @@ import { getPreferenceValues } from "@raycast/api";
 import { Preferences, FormValues, pageObject } from "./types";
 
 const preferences = getPreferenceValues<Preferences>();
+const NON_TITLE = "Non Title";
 
 export const databaseId: string = preferences.databaseId;
 export const titleProperty: string = preferences.titleProperty;
@@ -170,6 +171,10 @@ export function buildSearchParams(page_size: number = 5): any {
   return params;
 }
 
+export function extractPageTitle(page: pageObject): string {
+  return page.properties[titleProperty].title[0]?.plain_text || NON_TITLE;
+}
+
 function formatPageStartEndTime(page: pageObject): string {
   const dateEvent = page.properties[timeProperty];
   const start_time = dateEvent.date.start.substring(11, 16);
@@ -178,22 +183,18 @@ function formatPageStartEndTime(page: pageObject): string {
 }
 
 export function formatPageTitle(page: pageObject): string {
-  const title = page.properties[titleProperty].title[0].plain_text;
+  const title = extractPageTitle(page);
   const time = formatPageStartEndTime(page);
   return `${title} ${time}`;
-}
-
-export function extractPageTitle(page: pageObject): string {
-  return page.properties[titleProperty].title[0].plain_text;
 }
 
 export function pageToClipboardText(page: pageObject): string {
   const dateEvent = page.properties[timeProperty];
   const tmpReflection = page.properties[reflectionProperty].rich_text[0];
 
-  const title = page.properties[titleProperty].title[0].plain_text;
+  const title = extractPageTitle(page);
   const time = formatPageStartEndTime(page);
-  let reflection = tmpReflection ? tmpReflection.plain_text : "";
+  let reflection = tmpReflection ? tmpReflection?.plain_text : "";
 
   const now = new Date();
   const iso8601Date = new Date(dateEvent.date.start);
@@ -207,7 +208,7 @@ export function pageToClipboardText(page: pageObject): string {
 }
 
 export function formatPageTitleForObsidian(page: pageObject): string {
-  const title = page.properties[titleProperty].title[0].plain_text;
+  const title = extractPageTitle(page);
   const time = formatPageStartEndTime(page);
   return `- ${time} ${title}`;
 }
