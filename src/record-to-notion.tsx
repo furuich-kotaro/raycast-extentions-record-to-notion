@@ -1,42 +1,43 @@
-import { useState, useEffect } from "react";
 import {
-  Form,
-  ActionPanel,
   Action,
+  ActionPanel,
   Clipboard,
-  showToast,
-  Toast,
+  closeMainWindow,
+  Form,
   launchCommand,
   LaunchType,
-  PopToRootType,
-  closeMainWindow,
   open,
+  PopToRootType,
+  showToast,
+  Toast,
 } from "@raycast/api";
-import { useForm, FormValidation } from "@raycast/utils";
+import { FormValidation, useForm } from "@raycast/utils";
+import { useEffect, useState } from "react";
+import { createInterval } from "../lib/intervals";
 import {
-  extractPageTitle,
-  formatPageTitle,
-  pageToClipboardText,
+  activityCategoryOptions,
+  activityCategoryProperty,
   // formatPageTitleForObsidian,
   buildSearchParams,
-  pageCreateRequestParams,
-  wasteTimeCategoryOptions,
-  activityCategoryOptions,
-  effectivityOptions,
   databaseId,
+  effectivityOptions,
+  extractPageTitle,
+  formatPageTitle,
   notionClient,
-  timeProperty,
-  wasteTimeCategoryProperty,
-  activityCategoryProperty,
+  pageCreateRequestParams,
+  pageToClipboardText,
   setActivityCategoryFromTitle,
+  timeProperty,
+  wasteTimeCategoryOptions,
+  wasteTimeCategoryProperty,
 } from "../lib/notion";
-import { createInterval } from "../lib/intervals";
-import { pageObject, FormValues } from "../lib/types";
+import { FormValues, pageObject } from "../lib/types";
 
 export default function Command() {
   const [creating, setCreating] = useState(false);
   const [postLog, setPostLog] = useState("");
   const [latestPage, setLatestPage] = useState({} as pageObject);
+  const [fetching, setFetching] = useState(false);
 
   function launchSelfTimer() {
     try {
@@ -49,16 +50,16 @@ export default function Command() {
     }
   }
 
-  function launchObsidian(input: string) {
-    try {
-      const encodedInput = encodeURIComponent(JSON.stringify({ text: input }));
-      open(
-        `raycast://extensions/KevinBatdorf/obsidian/dailyNoteAppendCommand?launchType=userInitiated&arguments=${encodedInput}`,
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  // function launchObsidian(input: string) {
+  //   try {
+  //     const encodedInput = encodeURIComponent(JSON.stringify({ text: input }));
+  //     open(
+  //       `raycast://extensions/KevinBatdorf/obsidian/dailyNoteAppendCommand?launchType=userInitiated&arguments=${encodedInput}`,
+  //     );
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
   function calculateMinutes(startMinutes: string, endMinutes: string) {
     const start = Math.abs(Number(startMinutes));
@@ -156,21 +157,32 @@ export default function Command() {
     },
   });
 
-  function fetchLatestPages() {
+  async function fetchLatestPages() {
+    if (fetching) {
+      return;
+    }
+    const toast = await showToast({ style: Toast.Style.Animated, title: "fetching pages..." });
+    setFetching(true);
     const params = buildSearchParams();
     notionClient
       .post(`/databases/${databaseId}/query`, params)
       .then((res) => {
         const pages = res.data.results;
         const titles = pages
-          .map((page: any) => formatPageTitle(page))
+          .map((page: pageObject) => formatPageTitle(page))
           .reverse()
           .join("\n");
         setPostLog(titles);
         setLatestPage(pages[0]);
+        toast.hide();
       })
       .catch((error) => {
+        toast.style = Toast.Style.Failure;
+        toast.title = "failed to fetch pages";
         console.error(error);
+      })
+      .finally(() => {
+        setFetching(false);
       });
   }
 
@@ -182,7 +194,7 @@ export default function Command() {
     }
   };
 
-  const handlePageCopy = (page: any) => {
+  const handlePageCopy = (page: pageObject) => {
     const tmpWastTimeCategory = page.properties[wasteTimeCategoryProperty].select;
     const tmpActivityCategory = page.properties[activityCategoryProperty].select;
 
@@ -248,7 +260,7 @@ export default function Command() {
         onChange={(newValue) => setBreakTime(newValue, "15")}
       />
       <Form.Checkbox label="引き続き登録する" {...itemProps.continueRegister} />
-      {/* <Form.Checkbox
+      <Form.Checkbox
         id="setTimer"
         label="15分のタイマーをセット"
         defaultValue={false}
@@ -258,7 +270,17 @@ export default function Command() {
             closeMainWindow({ popToRootType: PopToRootType.Immediate });
           }
         }}
-      /> */}
+      />
+      <Form.Checkbox
+        id="fetchLatestLog"
+        label="直近のログを更新"
+        defaultValue={false}
+        onChange={(newValue) => {
+          if (newValue) {
+            fetchLatestPages();
+          }
+        }}
+      />
       {latestPage?.properties && (
         <>
           <Form.Checkbox

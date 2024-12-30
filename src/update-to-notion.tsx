@@ -28,12 +28,11 @@ import {
   effectivityProperty,
   wasteTimeCategoryProperty,
   activityCategoryProperty,
-  titleProperty,
   timeProperty,
   setActivityCategoryFromTitle,
 } from "../lib/notion";
 import { createInterval } from "../lib/intervals";
-import { FormValues } from "../lib/types";
+import { FormValues, pageObject } from "../lib/types";
 
 export default function Command() {
   const [updating, setUpdating] = useState(false);
@@ -91,8 +90,11 @@ export default function Command() {
     },
   });
 
-  function handlePageChange(pages: any, pageId: string) {
-    const page = pages.find((page: any) => page.id == pageId);
+  function handlePageChange(pages: pageObject[], pageId: string) {
+    const page = pages.find((page: pageObject) => page.id == pageId);
+    if (!page) {
+      return;
+    }
     const tmpReflection = page.properties[reflectionProperty].rich_text[0];
     const tmpEffectivity = page.properties[effectivityProperty].select;
     const tmpWastTimeCategory = page.properties[wasteTimeCategoryProperty].select;
@@ -179,7 +181,7 @@ export default function Command() {
               handlePageChange(pages, newValue);
             }}
           >
-            {pages.map((page: any) => (
+            {pages.map((page: pageObject) => (
               <Form.Dropdown.Item key={page.id} value={page.id} title={formatPageTitle(page)} />
             ))}
           </Form.Dropdown>

@@ -49,13 +49,14 @@ export const activityCategoryOptions = {
     "運動",
     "娯楽(能動的)",
     "娯楽(受動的)",
-    "雑談",
+    "コミュニケーション",
     "勉強",
     "読書",
     "情報収集",
     "振り返り・反省",
     "プライベート",
     "アウトドア",
+    "リラックス",
   ],
   Other: ["不明"],
 } as const;
@@ -241,12 +242,18 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "運動");
     } else if (/睡眠/.test(lowerTitle)) {
       setValue("activityCategory", "睡眠");
-    } else if (/漫画|アニメ|youtube|tver|sns|tiktok|ダラダラ|だらだら/i.test(lowerTitle)) {
+    } else if (/漫画|アニメ|youtube|tver|sns|tiktok|ダラダラ|だらだら|ベット/i.test(lowerTitle)) {
       setValue("activityCategory", "娯楽(受動的)");
     } else if (/振り返り|反省|ログ/.test(lowerTitle)) {
       setValue("activityCategory", "振り返り・反省");
     } else if (/情報収集|feedly/.test(lowerTitle)) {
       setValue("activityCategory", "情報収集");
+    } else if (/雑談/.test(lowerTitle)) {
+      setValue("activityCategory", "コミュニケーション");
+    } else if (/読書/.test(lowerTitle)) {
+      setValue("activityCategory", "読書");
+    } else if (/ゆっくり/.test(lowerTitle)) {
+      setValue("activityCategory", "リラックス");
     }
   }, 300);
   return () => clearTimeout(timer);
