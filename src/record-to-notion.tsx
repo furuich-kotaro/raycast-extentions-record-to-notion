@@ -101,7 +101,7 @@ export default function Command() {
             setValue("title", "");
             setValue("start_minutes", newStartMinutes);
             setValue("end_minutes", newEndMinutes);
-            setValue("effectivity", "B");
+            setValue("effectivity", "C");
             setValue("wasteTimeCategory", "");
             setValue("activityCategory", "");
             setValue("reflection", "");

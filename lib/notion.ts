@@ -25,9 +25,11 @@ export const wasteTimeCategoryOptions = [
 ];
 
 export const effectivityOptions = {
-  A: "Good",
-  B: "Not bad",
-  C: "Bod",
+  A: "かなり集中",
+  B: "そこそこ集中",
+  C: "普通",
+  D: "集中していない",
+  E: "ほぼ集中していない",
 } as const;
 
 export const activityCategoryOptions = {
