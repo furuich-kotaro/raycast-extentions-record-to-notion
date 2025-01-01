@@ -247,40 +247,7 @@ export default function Command() {
           </Form.Dropdown.Section>
         ))}
       </Form.Dropdown>
-      <Form.Checkbox
-        id="breakTime5min"
-        label="5分休憩"
-        defaultValue={false}
-        onChange={(newValue) => setBreakTime(newValue, "5")}
-      />
-      <Form.Checkbox
-        id="breakTime15min"
-        label="15分休憩"
-        defaultValue={false}
-        onChange={(newValue) => setBreakTime(newValue, "15")}
-      />
       <Form.Checkbox label="引き続き登録する" {...itemProps.continueRegister} />
-      <Form.Checkbox
-        id="setTimer"
-        label="15分のタイマーをセット"
-        defaultValue={false}
-        onChange={(newValue) => {
-          if (newValue) {
-            createInterval(15);
-            closeMainWindow({ popToRootType: PopToRootType.Immediate });
-          }
-        }}
-      />
-      <Form.Checkbox
-        id="fetchLatestLog"
-        label="直近のログを更新"
-        defaultValue={false}
-        onChange={(newValue) => {
-          if (newValue) {
-            fetchLatestPages();
-          }
-        }}
-      />
       {latestPage?.properties && (
         <>
           <Form.Checkbox
@@ -309,6 +276,39 @@ export default function Command() {
           />
         </>
       )}
+      <Form.Checkbox
+        id="breakTime5min"
+        label="5分休憩"
+        defaultValue={false}
+        onChange={(newValue) => setBreakTime(newValue, "5")}
+      />
+      <Form.Checkbox
+        id="breakTime15min"
+        label="15分休憩"
+        defaultValue={false}
+        onChange={(newValue) => setBreakTime(newValue, "15")}
+      />
+      <Form.Checkbox
+        id="setTimer"
+        label="15分のタイマーをセット"
+        defaultValue={false}
+        onChange={(newValue) => {
+          if (newValue) {
+            createInterval(15);
+            closeMainWindow({ popToRootType: PopToRootType.Immediate });
+          }
+        }}
+      />
+      <Form.Checkbox
+        id="fetchLatestLog"
+        label="直近のログを更新"
+        defaultValue={false}
+        onChange={(newValue) => {
+          if (newValue) {
+            fetchLatestPages();
+          }
+        }}
+      />
 
       <Form.Separator />
       <Form.Dropdown title="効果" {...itemProps.effectivity}>
