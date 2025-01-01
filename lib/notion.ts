@@ -238,7 +238,7 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "移動");
     } else if (/休憩|昼/.test(lowerTitle)) {
       setValue("activityCategory", "休憩");
-    } else if (/夕食|身支度|シャワ|風呂|歯磨き|掃除|片付け/.test(lowerTitle)) {
+    } else if (/身支度|シャワ|風呂|歯磨き|掃除|片付け|トイレ|朝食|昼食|夕食|食事/.test(lowerTitle)) {
       setValue("activityCategory", "生活時間");
     } else if (/ランニング|運動|腹筋/.test(lowerTitle)) {
       setValue("activityCategory", "運動");
