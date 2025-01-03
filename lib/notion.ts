@@ -273,6 +273,8 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "睡眠");
     } else if (/漫画|アニメ|youtube|tver|sns|tiktok|ダラダラ|だらだら|ベット/i.test(lowerTitle)) {
       setValue("activityCategory", "娯楽(受動的)");
+    } else if (/ゲーム/i.test(lowerTitle)) {
+      setValue("activityCategory", "娯楽(能動的)");
     } else if (/振り返り|反省|ログ/.test(lowerTitle)) {
       setValue("activityCategory", "振り返り・反省");
     } else if (/情報収集|feedly/.test(lowerTitle)) {

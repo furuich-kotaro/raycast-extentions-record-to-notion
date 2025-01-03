@@ -6,7 +6,6 @@ import {
   Form,
   launchCommand,
   LaunchType,
-  open,
   PopToRootType,
   showToast,
   Toast,
@@ -128,7 +127,7 @@ export default function Command() {
       title: "",
       start_minutes: "0",
       end_minutes: "30",
-      effectivity: "B",
+      effectivity: "C",
       wasteTimeCategory: "",
       activityCategory: "",
       reflection: "",
@@ -213,7 +212,7 @@ export default function Command() {
 
   useEffect(() => {
     createInterval(1);
-  }, [itemProps.title.value, itemProps.end_minutes.value]);
+  }, [itemProps.title.value, itemProps.end_minutes.value, itemProps.reflection.value]);
 
   return (
     <Form

@@ -139,7 +139,7 @@ export default function Command() {
 
   useEffect(() => {
     createInterval(1);
-  }, [itemProps.title.value, itemProps.end_minutes.value]);
+  }, [itemProps.title.value, itemProps.end_minutes.value, itemProps.reflection.value]);
 
   return (
     <Form
