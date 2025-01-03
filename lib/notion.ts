@@ -216,6 +216,33 @@ export function formatPageTitleForObsidian(page: pageObject): string {
   return `- ${time} ${title}`;
 }
 
+export function formatPagePropertiesForReflection(page: pageObject): string {
+  const tmpReflection = page.properties[reflectionProperty].rich_text[0];
+  const tmpEffectivity = page.properties[effectivityProperty]?.select?.name;
+  const tmpWasteTimeCategory = page.properties[wasteTimeCategoryProperty]?.select?.name;
+  const tmpActivityCategory = page.properties[activityCategoryProperty]?.select?.name;
+
+  let returnText = "";
+
+  returnText += `${timeProperty}: ${extractPageTitle(page)}\n`;
+  returnText += `${timeProperty}: ${formatPageStartEndTime(page)}\n`;
+
+  if (tmpReflection?.plain_text && tmpReflection.plain_text.trim() !== "") {
+    returnText += `${reflectionProperty}: ${tmpReflection.plain_text}\n`;
+  }
+  if (tmpEffectivity) {
+    returnText += `${effectivityProperty}: ${tmpEffectivity}\n`;
+  }
+  if (tmpWasteTimeCategory) {
+    returnText += `${wasteTimeCategoryProperty}: ${tmpWasteTimeCategory}\n`;
+  }
+  if (tmpActivityCategory) {
+    returnText += `${activityCategoryProperty}: ${tmpActivityCategory}\n`;
+  }
+
+  return returnText;
+}
+
 export const setActivityCategoryFromTitle = (
   setValue: <K extends keyof FormValues>(id: K, value: FormValues[K]) => void,
   title: string,

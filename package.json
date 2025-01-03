@@ -104,13 +104,20 @@
       "description": "check recording",
       "mode": "no-view",
       "interval": "3m"
+    },
+    {
+      "name": "get-daily-records",
+      "title": "Get Daily Records",
+      "description": "Get daily records from Notion",
+      "mode": "view"
     }
   ],
   "dependencies": {
     "@raycast/api": "^1.64.4",
     "@raycast/utils": "^1.10.1",
     "axios": "^1.7.4",
-    "child_process": "^1.0.2"
+    "child_process": "^1.0.2",
+    "date-fns": "^4.1.0"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^1.0.6",
