@@ -16,11 +16,11 @@ export const expectedWorkTimeProperty: string = preferences.expectedWorkTimeProp
 export const tensionProperty: string = preferences.tensionProperty;
 
 export const tensionOptions = {
-  "すごい上がった": "すごい上がった",
-  "上がった": "上がった",
-  "変わらない": "変わらない",
-  "下がった": "下がった",
-  "すごい下がった": "すごい下がった"
+  すごい上がった: "すごい上がった",
+  上がった: "上がった",
+  変わらない: "変わらない",
+  下がった: "下がった",
+  すごい下がった: "すごい下がった",
 } as const;
 
 export const wasteTimeCategoryOptions = [
@@ -239,7 +239,7 @@ export function formatPagePropertiesForReflection(page: pageObject): string {
 
   let returnText = "";
 
-  returnText += `${timeProperty}: ${extractPageTitle(page)}\n`;
+  returnText += `${titleProperty}: ${extractPageTitle(page)}\n`;
   returnText += `${timeProperty}: ${formatPageStartEndTime(page)}\n`;
 
   if (tmpReflection?.plain_text && tmpReflection.plain_text.trim() !== "") {
