@@ -2,7 +2,7 @@ import { Action, ActionPanel, Form, Clipboard, showToast, Toast } from "@raycast
 import { FormValidation, useForm } from "@raycast/utils";
 import { format } from "date-fns";
 import { useState } from "react";
-import { databaseId, formatPagePropertiesForReflection, notionClient, tensionProperty, timeProperty } from "../lib/notion";
+import { databaseId, formatPagePropertiesForReflection, notionClient, timeProperty } from "../lib/notion";
 import { pageObject } from "../lib/types";
 
 export default function Command() {
@@ -16,17 +16,33 @@ export default function Command() {
     Clipboard.copy(logs.join("\n----\n"));
   };
 
+  const filterPages = (pages: pageObject[], selectedDate: string) => {
+    return pages.filter((page: pageObject) => {
+      const startDate = new Date(page.properties[timeProperty].date.start);
+      const endDate = page.properties[timeProperty].date.end ? new Date(page.properties[timeProperty].date.end) : null;
+
+      if (startDate && endDate) {
+        return format(startDate, "yyyy-MM-dd") === selectedDate || format(endDate, "yyyy-MM-dd") === selectedDate;
+      } else if (startDate) {
+        return format(startDate, "yyyy-MM-dd") === selectedDate;
+      }
+    });
+  };
+
   const { handleSubmit, itemProps } = useForm<{ selectedDate: Date | null }>({
     async onSubmit(values) {
       try {
         setIsLoading(true);
-        if (!(values.selectedDate instanceof Date)) {
+        const selectedDate = values.selectedDate;
+        if (!(selectedDate instanceof Date)) {
           console.log("Selected date is required");
           return;
         }
 
-        const startOfDay = format(values.selectedDate, "yyyy-MM-dd'T'00:00:00+09:00");
-        const endOfDay = format(values.selectedDate, "yyyy-MM-dd'T'23:59:59+09:00");
+        const startOfDay = format(
+          new Date(new Date(selectedDate).setHours(0, 0, 0, 0) - 3 * 60 * 60 * 1000),
+          "yyyy-MM-dd'T'HH:mm:00+09:00",
+        );
 
         const params = {
           filter: {
@@ -37,7 +53,7 @@ export default function Command() {
               },
               {
                 property: timeProperty,
-                date: { before: endOfDay },
+                date: { before: format(selectedDate, "yyyy-MM-dd'T'23:59:59+09:00") },
               },
             ],
           },
@@ -45,7 +61,8 @@ export default function Command() {
         };
 
         const response = await notionClient.post(`/databases/${databaseId}/query`, params);
-        copyPages(response.data.results);
+        const pages = filterPages(response.data.results, format(selectedDate, "yyyy-MM-dd"));
+        copyPages(pages);
         showToast({
           style: Toast.Style.Success,
           title: "Success",
