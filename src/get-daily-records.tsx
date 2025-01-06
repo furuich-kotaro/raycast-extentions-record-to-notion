@@ -2,7 +2,7 @@ import { Action, ActionPanel, Form, Clipboard, showToast, Toast } from "@raycast
 import { FormValidation, useForm } from "@raycast/utils";
 import { format } from "date-fns";
 import { useState } from "react";
-import { databaseId, formatPagePropertiesForReflection, notionClient, timeProperty } from "../lib/notion";
+import { databaseId, formatPagePropertiesForReflection, notionClient, tensionProperty, timeProperty } from "../lib/notion";
 import { pageObject } from "../lib/types";
 
 export default function Command() {

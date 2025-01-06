@@ -29,6 +29,8 @@ import {
   timeProperty,
   wasteTimeCategoryOptions,
   wasteTimeCategoryProperty,
+  tensionOptions,
+  tensionProperty,
 } from "../lib/notion";
 import { FormValues, pageObject } from "../lib/types";
 
@@ -104,6 +106,7 @@ export default function Command() {
             setValue("wasteTimeCategory", "");
             setValue("activityCategory", "");
             setValue("reflection", "");
+            setValue("tension", "変わらない");
             focus("title");
           } else {
             if (taskMinutes > 0) {
@@ -111,7 +114,6 @@ export default function Command() {
               launchSelfTimer();
             }
             closeMainWindow({ popToRootType: PopToRootType.Immediate });
-            Clipboard.copy(pageToClipboardText(page));
             // launchObsidian(formatPageTitleForObsidian(page));
           }
         })
@@ -131,6 +133,7 @@ export default function Command() {
       wasteTimeCategory: "",
       activityCategory: "",
       reflection: "",
+      tension: "変わらない",
       continueRegister: false,
     },
     validation: {
@@ -200,6 +203,7 @@ export default function Command() {
     setValue("title", extractPageTitle(latestPage));
     setValue("wasteTimeCategory", tmpWastTimeCategory ? tmpWastTimeCategory.name : "");
     setValue("activityCategory", tmpActivityCategory ? tmpActivityCategory.name : "");
+    setValue("tension", page.properties[tensionProperty].select.name);
   };
 
   useEffect(() => {
@@ -317,6 +321,12 @@ export default function Command() {
             value={key}
             title={effectivityOptions[key as keyof typeof effectivityOptions]}
           />
+        ))}
+      </Form.Dropdown>
+      <Form.Dropdown title="テンション" {...itemProps.tension}>
+        <Form.Dropdown.Item key="blank-tension" value="" title="選択してください" />
+        {Object.entries(tensionOptions).map(([key, value]) => (
+          <Form.Dropdown.Item key={key} value={key} title={value} />
         ))}
       </Form.Dropdown>
       <Form.Dropdown title="時間分類" {...itemProps.wasteTimeCategory}>

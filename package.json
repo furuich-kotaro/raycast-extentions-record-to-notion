@@ -70,6 +70,13 @@
       "description": "expectedWorkTimeProperty",
       "type": "textfield",
       "required": true
+    },
+    {
+      "name": "tensionProperty",
+      "title": "tensionProperty",
+      "description": "tensionProperty",
+      "type": "textfield",
+      "required": true
     }
   ],
   "commands": [

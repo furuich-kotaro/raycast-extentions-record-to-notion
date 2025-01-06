@@ -8,6 +8,7 @@ export type Preferences = {
   wasteTimeCategoryProperty: string;
   activityCategoryProperty: string;
   expectedWorkTimeProperty: string;
+  tensionProperty: string;
 };
 
 export type FormValues = {
@@ -19,6 +20,7 @@ export type FormValues = {
   wasteTimeCategory: string;
   activityCategory: string;
   reflection: string;
+  tension: string;
   continueRegister: boolean;
   continueUpdate: boolean;
 };

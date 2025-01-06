@@ -1,22 +1,10 @@
 import { useState, useEffect } from "react";
-import {
-  Form,
-  ActionPanel,
-  Action,
-  Clipboard,
-  showToast,
-  Toast,
-  launchCommand,
-  LaunchType,
-  PopToRootType,
-  closeMainWindow,
-} from "@raycast/api";
+import { Form, ActionPanel, Action, showToast, Toast, launchCommand, LaunchType } from "@raycast/api";
 import { useForm, FormValidation } from "@raycast/utils";
 import {
   extractPageTitle,
   formatMinutes,
   formatPageTitle,
-  pageToClipboardText,
   buildSearchParams,
   pageUpdateRequestParams,
   wasteTimeCategoryOptions,
@@ -30,6 +18,8 @@ import {
   activityCategoryProperty,
   timeProperty,
   setActivityCategoryFromTitle,
+  tensionOptions,
+  tensionProperty,
 } from "../lib/notion";
 import { createInterval } from "../lib/intervals";
 import { FormValues, pageObject } from "../lib/types";
@@ -51,10 +41,8 @@ export default function Command() {
 
       notionClient
         .patch(`/pages/${values.pageId}`, pageUpdateRequestParams(values))
-        .then((res) => {
+        .then(() => {
           showToast({ style: Toast.Style.Success, title: "success" });
-
-          Clipboard.copy(pageToClipboardText(res.data));
 
           if (!values.continueUpdate) {
             launchCommand({
@@ -99,6 +87,7 @@ export default function Command() {
     const tmpEffectivity = page.properties[effectivityProperty].select;
     const tmpWastTimeCategory = page.properties[wasteTimeCategoryProperty].select;
     const tmpActivityCategory = page.properties[activityCategoryProperty].select;
+    const tmpTension = page.properties[tensionProperty].select;
 
     setValue("title", extractPageTitle(page));
     setValue("start_minutes", page.properties[timeProperty].date.start.substring(0, 16));
@@ -107,6 +96,7 @@ export default function Command() {
     setValue("effectivity", tmpEffectivity ? tmpEffectivity.name : "");
     setValue("wasteTimeCategory", tmpWastTimeCategory ? tmpWastTimeCategory.name : "");
     setValue("activityCategory", tmpActivityCategory ? tmpActivityCategory.name : "");
+    setValue("tension", tmpTension ? tmpTension.name : "変わらない");
     setValue("pageId", page.id);
   }
 
@@ -198,13 +188,6 @@ export default function Command() {
               />
             ))}
           </Form.Dropdown>
-          <Form.Dropdown title="時間分類" {...itemProps.wasteTimeCategory}>
-            <Form.Dropdown.Item key="blank-wasteTimeCategory" value="" title="選択してください" />
-            {wasteTimeCategoryOptions.map((value, index) => (
-              <Form.Dropdown.Item key={`${index}-wasteTimeCategory`} value={value} title={value} />
-            ))}
-          </Form.Dropdown>
-
           <Form.Dropdown title="カテゴリ" {...itemProps.activityCategory}>
             <Form.Dropdown.Item key="blank-activityCategory" value="" title="選択してください" />
             {Object.entries(activityCategoryOptions).map(([section, values], i) => (
@@ -213,6 +196,17 @@ export default function Command() {
                   <Form.Dropdown.Item key={`${i}-${ii}-activityCategory`} value={value} title={value} />
                 ))}
               </Form.Dropdown.Section>
+            ))}
+          </Form.Dropdown>
+          <Form.Dropdown title="テンション" {...itemProps.tension}>
+            {Object.entries(tensionOptions).map(([key, value]) => (
+              <Form.Dropdown.Item key={key} value={key} title={value} />
+            ))}
+          </Form.Dropdown>
+          <Form.Dropdown title="時間分類" {...itemProps.wasteTimeCategory}>
+            <Form.Dropdown.Item key="blank-wasteTimeCategory" value="" title="選択してください" />
+            {wasteTimeCategoryOptions.map((value, index) => (
+              <Form.Dropdown.Item key={`${index}-wasteTimeCategory`} value={value} title={value} />
             ))}
           </Form.Dropdown>
           <Form.Checkbox label="引き続き更新する" {...itemProps.continueUpdate} />

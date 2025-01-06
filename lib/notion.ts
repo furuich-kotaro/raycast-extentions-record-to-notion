@@ -13,6 +13,15 @@ export const effectivityProperty: string = preferences.effectivityProperty;
 export const wasteTimeCategoryProperty: string = preferences.wasteTimeCategoryProperty;
 export const activityCategoryProperty: string = preferences.activityCategoryProperty;
 export const expectedWorkTimeProperty: string = preferences.expectedWorkTimeProperty;
+export const tensionProperty: string = preferences.tensionProperty;
+
+export const tensionOptions = {
+  "すごい上がった": "すごい上がった",
+  "上がった": "上がった",
+  "変わらない": "変わらない",
+  "下がった": "下がった",
+  "すごい下がった": "すごい下がった"
+} as const;
 
 export const wasteTimeCategoryOptions = [
   "浪費",
@@ -115,6 +124,11 @@ function commonPageParams(values: FormValues, startMinutes: string, endMinutes: 
       },
       [expectedWorkTimeProperty]: {
         number: Number(values.end_minutes),
+      },
+      [tensionProperty]: {
+        select: {
+          name: values.tension,
+        },
       },
     },
   };
@@ -221,6 +235,7 @@ export function formatPagePropertiesForReflection(page: pageObject): string {
   const tmpEffectivity = page.properties[effectivityProperty]?.select?.name;
   const tmpWasteTimeCategory = page.properties[wasteTimeCategoryProperty]?.select?.name;
   const tmpActivityCategory = page.properties[activityCategoryProperty]?.select?.name;
+  const tmpTension = page.properties[tensionProperty]?.select?.name;
 
   let returnText = "";
 
@@ -238,6 +253,9 @@ export function formatPagePropertiesForReflection(page: pageObject): string {
   }
   if (tmpActivityCategory) {
     returnText += `${activityCategoryProperty}: ${tmpActivityCategory}\n`;
+  }
+  if (tmpTension) {
+    returnText += `${tensionProperty}: ${tmpTension}\n`;
   }
 
   return returnText;
