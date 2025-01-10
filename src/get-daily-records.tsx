@@ -2,18 +2,47 @@ import { Action, ActionPanel, Form, Clipboard, showToast, Toast } from "@raycast
 import { FormValidation, useForm } from "@raycast/utils";
 import { format } from "date-fns";
 import { useState } from "react";
-import { databaseId, formatPagePropertiesForReflection, notionClient, timeProperty } from "../lib/notion";
+import {
+  databaseId,
+  formatPagePropertiesForReflection,
+  notionClient,
+  timeProperty,
+  activityCategoryOptions,
+  activityCategoryProperty,
+} from "../lib/notion";
 import { pageObject } from "../lib/types";
 
 export default function Command() {
   const [isLoading, setIsLoading] = useState(false);
 
   const copyPages = (pages: pageObject[]) => {
-    const logs = pages.map((page) => {
-      return formatPagePropertiesForReflection(page);
+    const groupedPages: { [key: string]: pageObject[] } = {
+      Work: [],
+      Personal: [],
+    };
+
+    pages.forEach((page) => {
+      const category = page.properties[activityCategoryProperty]?.select?.name;
+      if (category) {
+        if (activityCategoryOptions.Work.includes(category)) {
+          groupedPages.Work.push(page);
+        } else {
+          groupedPages.Personal.push(page);
+        }
+      } else {
+        groupedPages.Personal.push(page);
+      }
     });
 
-    Clipboard.copy(logs.join("\n----\n"));
+    const formattedGroups = Object.entries(groupedPages)
+      .filter(([, pages]) => pages.length > 0)
+      .map(([category, pages]) => {
+        const formattedPages = pages.map((page) => formatPagePropertiesForReflection(page)).join("\n----\n");
+        return `## ${category}\n${formattedPages}`;
+      })
+      .join("\n\n\n");
+
+    Clipboard.copy(formattedGroups);
   };
 
   const filterPages = (pages: pageObject[], selectedDate: string) => {

@@ -51,10 +51,10 @@ export const activityCategoryOptions = {
     "会議・打ち合わせ",
     "Slackやりとり",
     "雑務",
-  ],
-  Life: [
-    "移動",
     "休憩",
+  ],
+  Personal: [
+    "移動",
     "生活時間",
     "睡眠",
     "運動",
@@ -68,8 +68,8 @@ export const activityCategoryOptions = {
     "プライベート",
     "アウトドア",
     "リラックス",
+    "不明",
   ],
-  Other: ["不明"],
 } as const;
 
 export const notionClient = axios.create({
@@ -258,7 +258,7 @@ export function formatPagePropertiesForReflection(page: pageObject): string {
     returnText += `${tensionProperty}: ${tmpTension}\n`;
   }
 
-  return returnText;
+  return returnText.trim();
 }
 
 export const setActivityCategoryFromTitle = (
