@@ -303,6 +303,8 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "読書");
     } else if (/ゆっくり/.test(lowerTitle)) {
       setValue("activityCategory", "リラックス");
+    } else if (/請求書|資料/.test(lowerTitle)) {
+      setValue("activityCategory", "雑務");
     }
   }, 300);
   return () => clearTimeout(timer);
