@@ -30,7 +30,16 @@ export default function Command() {
           groupedPages.Personal.push(page);
         }
       } else {
-        groupedPages.Personal.push(page);
+        const startDate = new Date(page.properties[timeProperty].date.start);
+        const dayOfWeek = startDate.getDay();
+        const hours = startDate.getHours();
+
+        // 月曜(1)から金曜(5)の10:00-19:00はWork
+        if (dayOfWeek >= 1 && dayOfWeek <= 5 && hours >= 10 && hours < 20) {
+          groupedPages.Work.push(page);
+        } else {
+          groupedPages.Personal.push(page);
+        }
       }
     });
 
