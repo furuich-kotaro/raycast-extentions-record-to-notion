@@ -110,7 +110,7 @@
       "title": "Check recording",
       "description": "check recording",
       "mode": "no-view",
-      "interval": "3m"
+      "interval": "1m"
     },
     {
       "name": "get-daily-records",
