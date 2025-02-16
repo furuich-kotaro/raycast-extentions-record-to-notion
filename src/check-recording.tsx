@@ -1,4 +1,4 @@
-import { launchCommand, LaunchType } from "@raycast/api";
+import { launchCommand, LaunchType, showToast, Toast } from "@raycast/api";
 import { getCurrentInterval } from "../lib/intervals";
 
 export default async function CheckRecoding() {
@@ -12,6 +12,7 @@ export default async function CheckRecoding() {
       });
     } catch (error) {
       console.error(error);
+      showToast({ style: Toast.Style.Failure, title: "Failed to launch record-to-notion" });
     }
   }
 }
