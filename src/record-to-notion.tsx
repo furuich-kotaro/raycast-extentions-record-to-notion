@@ -106,7 +106,7 @@ export default function Command() {
             setValue("wasteTimeCategory", "");
             setValue("activityCategory", "");
             setValue("reflection", "");
-            setValue("tension", "変わらない");
+            setValue("tension", "");
             focus("title");
           } else {
             if (taskMinutes > 0) {
