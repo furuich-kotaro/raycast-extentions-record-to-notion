@@ -125,11 +125,6 @@ function commonPageParams(values: FormValues, startMinutes: string, endMinutes: 
       [expectedWorkTimeProperty]: {
         number: Number(values.end_minutes),
       },
-      [tensionProperty]: {
-        select: {
-          name: values.tension,
-        },
-      },
     },
   };
 
@@ -145,6 +140,14 @@ function commonPageParams(values: FormValues, startMinutes: string, endMinutes: 
     params.properties[activityCategoryProperty] = {
       select: {
         name: values.activityCategory,
+      },
+    };
+  }
+
+  if (values.tension.length > 0) {
+    params.properties[tensionProperty] = {
+      select: {
+        name: values.tension,
       },
     };
   }
@@ -283,7 +286,9 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "移動");
     } else if (/休憩|昼/.test(lowerTitle)) {
       setValue("activityCategory", "休憩");
-    } else if (/身支度|シャワ|風呂|歯磨き|掃除|片付け|トイレ|朝食|昼食|夕食|食事|買い出し|買出し|洗い物/.test(lowerTitle)) {
+    } else if (
+      /身支度|シャワ|風呂|歯磨き|掃除|片付け|トイレ|朝食|昼食|夕食|食事|買い出し|買出し|洗い物/.test(lowerTitle)
+    ) {
       setValue("activityCategory", "生活時間");
     } else if (/ランニング|運動|腹筋|筋トレ/.test(lowerTitle)) {
       setValue("activityCategory", "運動");

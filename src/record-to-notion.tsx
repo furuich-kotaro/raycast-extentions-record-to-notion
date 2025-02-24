@@ -133,7 +133,7 @@ export default function Command() {
       wasteTimeCategory: "",
       activityCategory: "",
       reflection: "",
-      tension: "変わらない",
+      tension: "",
       continueRegister: false,
     },
     validation: {
