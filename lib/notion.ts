@@ -269,13 +269,13 @@ export const setActivityCategoryFromTitle = (
     const lowerTitle = title.toLowerCase();
     if (/実装|開発|改善|修正/.test(lowerTitle)) {
       setValue("activityCategory", "開発(コーディング)");
-    } else if (/動作確認|テスト|リリース/.test(lowerTitle)) {
+    } else if (/動作確認|テスト|リリース|タスク整理|todo整理/.test(lowerTitle)) {
       setValue("activityCategory", "開発(コーディング以外)");
-    } else if (/調査|QA|設計/.test(lowerTitle)) {
+    } else if (/調査|QA|設計|qa/.test(lowerTitle)) {
       setValue("activityCategory", "調査タスク");
     } else if (/レビュ|review|相談/.test(lowerTitle)) {
       setValue("activityCategory", "コードレビュー");
-    } else if (/会議|打ち合わせ|MTG|定例|1on1/.test(lowerTitle)) {
+    } else if (/会議|打ち合わせ|MTG|定例|1on1|ミーティング/.test(lowerTitle)) {
       setValue("activityCategory", "会議・打ち合わせ");
     } else if (/slack/.test(lowerTitle)) {
       setValue("activityCategory", "Slackやりとり");
@@ -283,13 +283,13 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "移動");
     } else if (/休憩|昼/.test(lowerTitle)) {
       setValue("activityCategory", "休憩");
-    } else if (/身支度|シャワ|風呂|歯磨き|掃除|片付け|トイレ|朝食|昼食|夕食|食事/.test(lowerTitle)) {
+    } else if (/身支度|シャワ|風呂|歯磨き|掃除|片付け|トイレ|朝食|昼食|夕食|食事|買い出し|買出し|洗い物/.test(lowerTitle)) {
       setValue("activityCategory", "生活時間");
-    } else if (/ランニング|運動|腹筋/.test(lowerTitle)) {
+    } else if (/ランニング|運動|腹筋|筋トレ/.test(lowerTitle)) {
       setValue("activityCategory", "運動");
-    } else if (/睡眠/.test(lowerTitle)) {
+    } else if (/睡眠|仮眠|度寝/.test(lowerTitle)) {
       setValue("activityCategory", "睡眠");
-    } else if (/漫画|アニメ|youtube|tver|sns|tiktok|ダラダラ|だらだら|ベット/i.test(lowerTitle)) {
+    } else if (/漫画|アニメ|youtube|tver|sns|tiktok|ダラダラ|だらだら|ベット|テレビ|abema|/i.test(lowerTitle)) {
       setValue("activityCategory", "娯楽(受動的)");
     } else if (/ゲーム/i.test(lowerTitle)) {
       setValue("activityCategory", "娯楽(能動的)");
@@ -301,7 +301,7 @@ export const setActivityCategoryFromTitle = (
       setValue("activityCategory", "コミュニケーション");
     } else if (/読書/.test(lowerTitle)) {
       setValue("activityCategory", "読書");
-    } else if (/ゆっくり/.test(lowerTitle)) {
+    } else if (/ゆっくり|まったり|スキンシップ/.test(lowerTitle)) {
       setValue("activityCategory", "リラックス");
     } else if (/請求書|資料/.test(lowerTitle)) {
       setValue("activityCategory", "雑務");
