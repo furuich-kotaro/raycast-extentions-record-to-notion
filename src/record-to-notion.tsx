@@ -1,7 +1,6 @@
 import {
   Action,
   ActionPanel,
-  Clipboard,
   closeMainWindow,
   Form,
   launchCommand,
@@ -16,7 +15,6 @@ import { createInterval } from "../lib/intervals";
 import {
   activityCategoryOptions,
   activityCategoryProperty,
-  // formatPageTitleForObsidian,
   buildSearchParams,
   databaseId,
   effectivityOptions,
@@ -24,7 +22,6 @@ import {
   formatPageTitle,
   notionClient,
   pageCreateRequestParams,
-  pageToClipboardText,
   setActivityCategoryFromTitle,
   timeProperty,
   wasteTimeCategoryOptions,
@@ -50,17 +47,6 @@ export default function Command() {
       console.error(error);
     }
   }
-
-  // function launchObsidian(input: string) {
-  //   try {
-  //     const encodedInput = encodeURIComponent(JSON.stringify({ text: input }));
-  //     open(
-  //       `raycast://extensions/KevinBatdorf/obsidian/dailyNoteAppendCommand?launchType=userInitiated&arguments=${encodedInput}`,
-  //     );
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
 
   function calculateMinutes(startMinutes: string, endMinutes: string) {
     const start = Math.abs(Number(startMinutes));
@@ -114,7 +100,6 @@ export default function Command() {
               launchSelfTimer();
             }
             closeMainWindow({ popToRootType: PopToRootType.Immediate });
-            // launchObsidian(formatPageTitleForObsidian(page));
           }
         })
         .catch((error) => {
